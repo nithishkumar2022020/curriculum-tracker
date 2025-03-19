@@ -206,66 +206,13 @@ def handle_update_subtopic_status(module_id, topic_id, subtopic_id, status):
     }
 
 def handler(event, context):
-    # Debug logging
-    print("Event:", json.dumps(event))
-    print("Context:", context)
-
-    # Set default headers
-    headers = {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS"
-    }
-
-    # Handle CORS preflight requests
-    if event.get("httpMethod") == "OPTIONS":
-        return {
-            "statusCode": 200,
-            "headers": headers
-        }
-
-    # Handle GET requests
-    if event.get("httpMethod") == "GET":
-        return {
-            "statusCode": 200,
-            "headers": headers,
-            "body": json.dumps(curriculum_data)
-        }
-
-    # Handle PUT requests
-    if event.get("httpMethod") == "PUT":
-        try:
-            data = json.loads(event.get("body", "{}"))
-            path = event.get("path", "").strip("/")
-            path_parts = path.split("/")
-            
-            # Extract IDs from the path
-            if len(path_parts) >= 4 and path_parts[-4] == "module":
-                module_id = int(path_parts[-3])
-                topic_id = int(path_parts[-1])
-                
-                if "subtopic" in path_parts:
-                    subtopic_id = int(path_parts[-1])
-                    return handle_update_subtopic_status(module_id, topic_id, subtopic_id, data["status"])
-                else:
-                    return handle_update_topic_status(module_id, topic_id, data["status"])
-            
-            return {
-                "statusCode": 404,
-                "headers": headers,
-                "body": json.dumps({"error": "Not found"})
-            }
-        except Exception as e:
-            print("Error:", str(e))
-            return {
-                "statusCode": 400,
-                "headers": headers,
-                "body": json.dumps({"error": str(e)})
-            }
-
     return {
-        "statusCode": 405,
-        "headers": headers,
-        "body": json.dumps({"error": "Method not allowed"})
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        "body": '{"message": "Hello from the API!"}'
     } 
