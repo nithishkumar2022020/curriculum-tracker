@@ -145,22 +145,27 @@ export default function Home() {
 
   const updateSubtopicStatus = async (moduleId: number, topicId: number, subtopicId: number, status: string) => {
     try {
-      const response = await fetch(`${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${subtopicId}/status?status=${status}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      // Convert the subtopic ID to match backend's structure (e.g., 101, 102, etc.)
+      const backendSubtopicId = topicId * 100 + subtopicId;
+      
+      const response = await fetch(
+        `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${backendSubtopicId}/status?status=${status}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Failed to update subtopic status: ${response.statusText}`);
       }
 
-      // Refresh the curriculum data
+      // Refresh curriculum data
       fetchCurriculum();
     } catch (error) {
       console.error('Error updating subtopic status:', error);
-      // You might want to show an error message to the user here
     }
   };
 
