@@ -1,9 +1,9 @@
 [build]
   command = "npm run build"
-  publish = ".next"
+  publish = "out"
 
 [build.environment]
-  NEXT_PUBLIC_API_URL = "https://curriculum-tracker-backend.onrender.com"
+  NEXT_PUBLIC_API_URL = "/api"
 
 # Netlify Next.js specific settings
 [[plugins]]
