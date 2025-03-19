@@ -39,12 +39,7 @@ interface Curriculum {
   total_progress: number;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 
-               (typeof window !== 'undefined' && window.location.hostname === 'localhost' 
-                ? 'http://localhost:8000' 
-                : window.location.hostname.includes('render.com')
-                  ? window.location.hostname.replace('frontend', 'backend')
-                  : 'https://curriculum-tracker-backend.onrender.com');
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://curriculum-tracker-backend.onrender.com';
 
 export default function Home() {
   const [curriculum, setCurriculum] = useState<Curriculum | null>(null);
