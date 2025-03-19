@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+import os
 
 # Sample Curriculum Data
 curriculum_data = {
@@ -205,26 +206,37 @@ def handle_update_subtopic_status(module_id, topic_id, subtopic_id, status):
     }
 
 def handler(event, context):
+    # Debug logging
+    print("Event:", json.dumps(event))
+    print("Context:", context)
+
+    # Set default headers
+    headers = {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS"
+    }
+
     # Handle CORS preflight requests
-    if event["httpMethod"] == "OPTIONS":
+    if event.get("httpMethod") == "OPTIONS":
         return {
             "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS"
-            }
+            "headers": headers
         }
 
     # Handle GET requests
-    if event["httpMethod"] == "GET":
-        # For GET /curriculum, just return the curriculum data
-        return handle_get_curriculum()
+    if event.get("httpMethod") == "GET":
+        return {
+            "statusCode": 200,
+            "headers": headers,
+            "body": json.dumps(curriculum_data)
+        }
 
     # Handle PUT requests
-    if event["httpMethod"] == "PUT":
+    if event.get("httpMethod") == "PUT":
         try:
-            data = json.loads(event["body"])
+            data = json.loads(event.get("body", "{}"))
             path = event.get("path", "").strip("/")
             path_parts = path.split("/")
             
@@ -241,27 +253,19 @@ def handler(event, context):
             
             return {
                 "statusCode": 404,
-                "headers": {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*"
-                },
+                "headers": headers,
                 "body": json.dumps({"error": "Not found"})
             }
         except Exception as e:
+            print("Error:", str(e))
             return {
                 "statusCode": 400,
-                "headers": {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*"
-                },
+                "headers": headers,
                 "body": json.dumps({"error": str(e)})
             }
 
     return {
         "statusCode": 405,
-        "headers": {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
-        },
+        "headers": headers,
         "body": json.dumps({"error": "Method not allowed"})
     } 
