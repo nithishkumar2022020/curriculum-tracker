@@ -219,7 +219,7 @@ def handler(event, context):
     # Handle GET requests
     if event["httpMethod"] == "GET":
         path = event.get("path", "")
-        if path.endswith("/curriculum") or path == "/api/curriculum":
+        if path == "/curriculum" or path == "/api/curriculum" or path.endswith("/curriculum"):
             return handle_get_curriculum()
         return {
             "statusCode": 404,
@@ -236,7 +236,7 @@ def handler(event, context):
             data = json.loads(event["body"])
             path = event.get("path", "")
             
-            if "/api/curriculum/module/" in path or "/curriculum/module/" in path:
+            if "/curriculum/module/" in path or "/api/curriculum/module/" in path:
                 path_parts = path.split("/")
                 module_id = int(path_parts[-3])
                 topic_id = int(path_parts[-1])
