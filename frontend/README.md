@@ -12,48 +12,48 @@ npm install
 npm run dev
 ```
 
-## Deployment to Netlify
+## Deployment to Render
 
-### Option 1: Deploy via Netlify UI
+### Option 1: Deploy via Render UI
 
 1. Push your code to GitHub
-2. Log in to [Netlify](https://app.netlify.com/)
+2. Log in to [Render](https://app.render.com/)
 3. Click "Add new site" > "Import an existing project"
 4. Select your GitHub repository
 5. Configure the build settings:
    - Base directory: `frontend`
-   - Build command: `npm run build`
+   - Build Command: `rm -rf node_modules && npm install && npm run build`
    - Publish directory: `.next`
 6. Click "Deploy site"
 
-### Option 2: Deploy via Netlify CLI
+### Option 2: Deploy via Render CLI
 
-1. Install Netlify CLI:
+1. Install Render CLI:
    ```bash
-   npm install -g netlify-cli
+   npm install -g render-cli
    ```
 
-2. Login to Netlify:
+2. Login to Render:
    ```bash
-   netlify login
+   render login
    ```
 
-3. Initialize Netlify in your project:
+3. Initialize Render in your project:
    ```bash
    cd frontend
-   netlify init
+   render init
    ```
 
 4. Follow the prompts to create a new site or connect to an existing one
 
 5. Deploy your site:
    ```bash
-   netlify deploy --prod
+   render deploy
    ```
 
 ## Environment Variables
 
-The following environment variables need to be set in Netlify:
+The following environment variables need to be set in Render:
 
 - `NEXT_PUBLIC_API_URL` - URL of the backend API
 
