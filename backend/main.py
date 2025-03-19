@@ -1,9 +1,99 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+import os
+from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from typing import List, Optional, Dict, Any
 from datetime import datetime
+import logging
+from enum import Enum
+import json
 
-app = Flask(__name__)
-CORS(app)
+app = FastAPI(title="Full-Stack Development Progress Tracker")
+
+# Get CORS origins from environment variable or use default
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
+NETLIFY_URL = os.environ.get("NETLIFY_URL", "")
+
+# If we're on Render, add the Render external URL to allowed origins
+allowed_origins = [FRONTEND_URL]
+if RENDER_EXTERNAL_URL:
+    allowed_origins.append(RENDER_EXTERNAL_URL)
+    # Also allow the Render frontend URL
+    if "backend" in RENDER_EXTERNAL_URL:
+        frontend_url = RENDER_EXTERNAL_URL.replace("backend", "frontend")
+        allowed_origins.append(frontend_url)
+
+# Add Netlify URL if it exists
+if NETLIFY_URL:
+    allowed_origins.append(NETLIFY_URL)
+
+# Add common Netlify deployment URLs
+allowed_origins.extend([
+    "https://curriculum-tracker.netlify.app",
+    "https://curriculum-tracker-app.netlify.app",
+])
+
+# Enable CORS with more specific settings
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Add error handling middleware
+@app.middleware("http")
+async def error_handling_middleware(request: Request, call_next):
+    try:
+        response = await call_next(request)
+        return response
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"detail": str(e)}
+        )
+
+# Data Models
+class Subtopic(BaseModel):
+    id: int
+    name: str
+    description: str
+    duration: str
+    status: str = "not_started"  # not_started, in_progress, completed
+    completed_date: Optional[datetime] = None
+
+class Topic(BaseModel):
+    id: int
+    name: str
+    description: str
+    duration: str
+    status: str = "not_started"  # not_started, in_progress, completed
+    completed_date: Optional[datetime] = None
+    subtopics: List[Subtopic] = []
+
+class Module(BaseModel):
+    id: int
+    name: str
+    description: str
+    duration: str
+    topics: List[Topic]
+    status: str = "not_started"
+    progress: float = 0.0
+
+class Curriculum(BaseModel):
+    id: int
+    name: str
+    description: str
+    modules: List[Module]
+    total_progress: float = 0.0
 
 # Sample Curriculum Data
 curriculum_data = {
@@ -43,17 +133,21 @@ curriculum_data = {
     ]
 }
 
-@app.route('/api/curriculum', methods=['GET'])
-def get_curriculum():
-    return jsonify(curriculum_data)
+# API Endpoints
+@app.get("/")
+async def root():
+    return {"message": "Welcome to Full-Stack Development Progress Tracker API"}
 
-@app.route('/api/curriculum/module/<int:module_id>/topic/<int:topic_id>', methods=['PUT'])
-def update_topic_status(module_id, topic_id):
-    data = request.get_json()
-    status = data.get('status')
+@app.get("/curriculum")
+async def get_curriculum():
+    return curriculum_data
+
+@app.put("/curriculum/module/{module_id}/topic/{topic_id}/status")
+async def update_topic_status(module_id: int, topic_id: int, status: str):
+    logging.info(f"Updating status for module {module_id}, topic {topic_id} to {status}")
     
     if status not in ["not_started", "in_progress", "completed"]:
-        return jsonify({"error": "Invalid status value"}), 400
+        raise HTTPException(status_code=400, detail="Invalid status value")
     
     topic_found = False
     for module in curriculum_data["modules"]:
@@ -63,17 +157,19 @@ def update_topic_status(module_id, topic_id):
                     topic_found = True
                     topic["status"] = status
                     if status == "completed":
-                        topic["completed_date"] = datetime.now().isoformat()
+                        topic["completed_date"] = datetime.now()
+                        # Mark all subtopics as completed
                         for subtopic in topic.get("subtopics", []):
                             subtopic["status"] = "completed"
-                            subtopic["completed_date"] = datetime.now().isoformat()
+                            subtopic["completed_date"] = datetime.now()
                     elif status == "not_started":
                         topic["completed_date"] = None
+                        # Mark all subtopics as not started
                         for subtopic in topic.get("subtopics", []):
                             subtopic["status"] = "not_started"
                             subtopic["completed_date"] = None
                     
-                    # Update progress calculations
+                    # Update topic progress based on subtopics
                     if topic.get("subtopics"):
                         total_subtopics = len(topic["subtopics"])
                         completed_subtopics = sum(1 for s in topic["subtopics"] if s["status"] == "completed")
@@ -91,20 +187,19 @@ def update_topic_status(module_id, topic_id):
                     total_progress = sum(m["progress"] for m in curriculum_data["modules"])
                     curriculum_data["total_progress"] = total_progress / total_modules
                     
-                    return jsonify({"message": "Status updated successfully"})
+                    return {"message": "Status updated successfully"}
     
     if not topic_found:
-        return jsonify({"error": "Topic not found"}), 404
-    
-    return jsonify({"error": "Internal server error"}), 500
+        logging.error(f"Topic {topic_id} not found in module {module_id}")
+        raise HTTPException(status_code=404, detail="Topic not found")
+    raise HTTPException(status_code=500, detail="Internal server error")
 
-@app.route('/api/curriculum/module/<int:module_id>/topic/<int:topic_id>/subtopic/<int:subtopic_id>', methods=['PUT'])
-def update_subtopic_status(module_id, topic_id, subtopic_id):
-    data = request.get_json()
-    status = data.get('status')
+@app.put("/curriculum/module/{module_id}/topic/{topic_id}/subtopic/{subtopic_id}/status")
+async def update_subtopic_status(module_id: int, topic_id: int, subtopic_id: int, status: str):
+    logging.info(f"Updating status for module {module_id}, topic {topic_id}, subtopic {subtopic_id} to {status}")
     
     if status not in ["not_started", "in_progress", "completed"]:
-        return jsonify({"error": "Invalid status value"}), 400
+        raise HTTPException(status_code=400, detail="Invalid status value")
     
     subtopic_found = False
     for module in curriculum_data["modules"]:
@@ -116,19 +211,19 @@ def update_subtopic_status(module_id, topic_id, subtopic_id):
                             subtopic_found = True
                             subtopic["status"] = status
                             if status == "completed":
-                                subtopic["completed_date"] = datetime.now().isoformat()
+                                subtopic["completed_date"] = datetime.now()
                             elif status == "not_started":
                                 subtopic["completed_date"] = None
                             
-                            # Update topic progress
+                            # Update topic progress based on subtopics
                             total_subtopics = len(topic["subtopics"])
                             completed_subtopics = sum(1 for s in topic["subtopics"] if s["status"] == "completed")
                             topic["progress"] = (completed_subtopics / total_subtopics) * 100
                             
-                            # Update topic status
+                            # Update topic status based on subtopics
                             if all(s["status"] == "completed" for s in topic["subtopics"]):
                                 topic["status"] = "completed"
-                                topic["completed_date"] = datetime.now().isoformat()
+                                topic["completed_date"] = datetime.now()
                             elif any(s["status"] == "in_progress" for s in topic["subtopics"]):
                                 topic["status"] = "in_progress"
                             else:
@@ -145,12 +240,26 @@ def update_subtopic_status(module_id, topic_id, subtopic_id):
                             total_progress = sum(m["progress"] for m in curriculum_data["modules"])
                             curriculum_data["total_progress"] = total_progress / total_modules
                             
-                            return jsonify({"message": "Status updated successfully"})
+                            return {"message": "Status updated successfully"}
     
     if not subtopic_found:
-        return jsonify({"error": "Subtopic not found"}), 404
-    
-    return jsonify({"error": "Internal server error"}), 500
+        logging.error(f"Subtopic {subtopic_id} not found in topic {topic_id} of module {module_id}")
+        raise HTTPException(status_code=404, detail="Subtopic not found")
+    raise HTTPException(status_code=500, detail="Internal server error")
+
+@app.get("/curriculum/progress")
+async def get_progress():
+    return {
+        "total_progress": curriculum_data["total_progress"],
+        "modules": [
+            {
+                "id": module["id"],
+                "name": module["name"],
+                "progress": module["progress"]
+            }
+            for module in curriculum_data["modules"]
+        ]
+    }
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000) 
+    app.run(host='0.0.0.0', port=8080) 
