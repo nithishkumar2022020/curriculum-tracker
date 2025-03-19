@@ -1,16 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  output: 'export',
   reactStrictMode: true,
-  experimental: {
-    outputFileTracingRoot: undefined,
-    outputFileTracingIncludes: {
-      '/**/*': ['./public/**/*'],
-    },
-  },
-  server: {
-    port: process.env.PORT || 1000,
-    hostname: '0.0.0.0',
+  basePath: '/curriculum-tracker',
+  images: {
+    unoptimized: true,
   },
 }
 
