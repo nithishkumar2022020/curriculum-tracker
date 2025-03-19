@@ -2,43 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { fetchCurriculum, updateTopicStatus, updateSubtopicStatus } from './api';
-
-interface Subtopic {
-  id: number;
-  name: string;
-  description: string;
-  duration: string;
-  status: string;
-  completed_date: string | null;
-}
-
-interface Topic {
-  id: number;
-  name: string;
-  description: string;
-  duration: string;
-  status: string;
-  completed_date: string | null;
-  subtopics: Subtopic[];
-}
-
-interface Module {
-  id: number;
-  name: string;
-  description: string;
-  duration: string;
-  topics: Topic[];
-  status: string;
-  progress: number;
-}
-
-interface Curriculum {
-  id: number;
-  name: string;
-  description: string;
-  modules: Module[];
-  total_progress: number;
-}
+import { Curriculum, Module, Topic, Subtopic } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://curriculum-tracker-backend.onrender.com';
 

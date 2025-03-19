@@ -1,7 +1,9 @@
+import { Curriculum } from './types';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://curriculum-tracker-backend.onrender.com';
 
 // Cache for curriculum data
-let curriculumCache: any = null;
+let curriculumCache: Curriculum | null = null;
 let lastFetchTime = 0;
 const CACHE_DURATION = 60000; // 1 minute in milliseconds
 
@@ -14,6 +16,7 @@ export async function fetchCurriculum() {
   }
 
   try {
+    console.log('Fetching curriculum from:', API_URL);
     const response = await fetch(`${API_URL}/curriculum`, {
       headers: {
         'Content-Type': 'application/json',
@@ -22,7 +25,13 @@ export async function fetchCurriculum() {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch curriculum: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('API Error:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`Failed to fetch curriculum: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
@@ -49,7 +58,13 @@ export async function updateTopicStatus(moduleId: number, topicId: number, statu
     );
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      console.error('API Error:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`Failed to update topic status: ${response.status} ${response.statusText}`);
     }
     
     // Invalidate cache
@@ -76,7 +91,13 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
     );
 
     if (!response.ok) {
-      throw new Error(`Failed to update subtopic status: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('API Error:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`Failed to update subtopic status: ${response.status} ${response.statusText}`);
     }
 
     // Invalidate cache
