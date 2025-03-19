@@ -1,7 +1,5 @@
-from http.server import BaseHTTPRequestHandler
 import json
 from datetime import datetime
-import os
 
 # Sample Curriculum Data
 curriculum_data = {
@@ -206,52 +204,49 @@ def handle_update_subtopic_status(module_id, topic_id, subtopic_id, status):
         "body": json.dumps({"error": "Internal server error"})
     }
 
-class handler(BaseHTTPRequestHandler):
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-        self.end_headers()
-        return
-
-    def do_GET(self):
-        if self.path == "/api/curriculum":
-            response = handle_get_curriculum()
-        else:
-            response = {
-                "statusCode": 404,
-                "headers": {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*"
-                },
-                "body": json.dumps({"error": "Not found"})
+def handler(event, context):
+    # Handle CORS preflight requests
+    if event["httpMethod"] == "OPTIONS":
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS"
             }
-        
-        self.send_response(response["statusCode"])
-        for header, value in response["headers"].items():
-            self.send_header(header, value)
-        self.end_headers()
-        self.wfile.write(response["body"].encode())
-        return
+        }
 
-    def do_PUT(self):
-        content_length = int(self.headers["Content-Length"])
-        post_data = self.rfile.read(content_length)
-        data = json.loads(post_data.decode("utf-8"))
-        
-        if "/api/curriculum/module/" in self.path:
-            path_parts = self.path.split("/")
-            module_id = int(path_parts[4])
-            topic_id = int(path_parts[6])
+    # Handle GET requests
+    if event["httpMethod"] == "GET":
+        if event["path"] == "/api/curriculum":
+            return handle_get_curriculum()
+        return {
+            "statusCode": 404,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
+            },
+            "body": json.dumps({"error": "Not found"})
+        }
+
+    # Handle PUT requests
+    if event["httpMethod"] == "PUT":
+        try:
+            data = json.loads(event["body"])
+            path = event["path"]
             
-            if "subtopic" in self.path:
-                subtopic_id = int(path_parts[8])
-                response = handle_update_subtopic_status(module_id, topic_id, subtopic_id, data["status"])
-            else:
-                response = handle_update_topic_status(module_id, topic_id, data["status"])
-        else:
-            response = {
+            if "/api/curriculum/module/" in path:
+                path_parts = path.split("/")
+                module_id = int(path_parts[4])
+                topic_id = int(path_parts[6])
+                
+                if "subtopic" in path:
+                    subtopic_id = int(path_parts[8])
+                    return handle_update_subtopic_status(module_id, topic_id, subtopic_id, data["status"])
+                else:
+                    return handle_update_topic_status(module_id, topic_id, data["status"])
+            
+            return {
                 "statusCode": 404,
                 "headers": {
                     "Content-Type": "application/json",
@@ -259,10 +254,21 @@ class handler(BaseHTTPRequestHandler):
                 },
                 "body": json.dumps({"error": "Not found"})
             }
-        
-        self.send_response(response["statusCode"])
-        for header, value in response["headers"].items():
-            self.send_header(header, value)
-        self.end_headers()
-        self.wfile.write(response["body"].encode())
-        return 
+        except Exception as e:
+            return {
+                "statusCode": 400,
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*"
+                },
+                "body": json.dumps({"error": str(e)})
+            }
+
+    return {
+        "statusCode": 405,
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+        },
+        "body": json.dumps({"error": "Method not allowed"})
+    } 
