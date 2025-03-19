@@ -9,12 +9,23 @@ import logging
 from enum import Enum
 import json
 
+# Setup logging with more detailed format
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 app = FastAPI(title="Full-Stack Development Progress Tracker")
 
 # Get CORS origins from environment variable or use default
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
 NETLIFY_URL = os.environ.get("NETLIFY_URL", "")
+
+logger.debug(f"FRONTEND_URL: {FRONTEND_URL}")
+logger.debug(f"RENDER_EXTERNAL_URL: {RENDER_EXTERNAL_URL}")
+logger.debug(f"NETLIFY_URL: {NETLIFY_URL}")
 
 # If we're on Render, add the Render external URL to allowed origins
 allowed_origins = [FRONTEND_URL]
@@ -35,6 +46,8 @@ allowed_origins.extend([
     "https://curriculum-tracker-app.netlify.app",
 ])
 
+logger.debug(f"Allowed origins: {allowed_origins}")
+
 # Enable CORS with more specific settings
 app.add_middleware(
     CORSMiddleware,
@@ -45,17 +58,16 @@ app.add_middleware(
     expose_headers=["*"],
 )
 
-# Setup logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 # Add error handling middleware
 @app.middleware("http")
 async def error_handling_middleware(request: Request, call_next):
     try:
+        logger.debug(f"Request path: {request.url.path}")
         response = await call_next(request)
+        logger.debug(f"Response status: {response.status_code}")
         return response
     except Exception as e:
+        logger.error(f"Error handling request: {str(e)}")
         return JSONResponse(
             status_code=500,
             content={"detail": str(e)}
@@ -858,10 +870,12 @@ curriculum_data = {
 # API Endpoints
 @app.get("/")
 async def root():
+    logger.debug("Root endpoint called")
     return {"message": "Welcome to Full-Stack Development Progress Tracker API"}
 
 @app.get("/curriculum")
 async def get_curriculum():
+    logger.debug("Curriculum endpoint called")
     return curriculum_data
 
 @app.put("/curriculum/module/{module_id}/topic/{topic_id}/status")
