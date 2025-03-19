@@ -218,7 +218,8 @@ def handler(event, context):
 
     # Handle GET requests
     if event["httpMethod"] == "GET":
-        if event["path"] == "/api/curriculum":
+        path = event.get("path", "")
+        if path.endswith("/curriculum") or path == "/api/curriculum":
             return handle_get_curriculum()
         return {
             "statusCode": 404,
@@ -233,15 +234,15 @@ def handler(event, context):
     if event["httpMethod"] == "PUT":
         try:
             data = json.loads(event["body"])
-            path = event["path"]
+            path = event.get("path", "")
             
-            if "/api/curriculum/module/" in path:
+            if "/api/curriculum/module/" in path or "/curriculum/module/" in path:
                 path_parts = path.split("/")
-                module_id = int(path_parts[4])
-                topic_id = int(path_parts[6])
+                module_id = int(path_parts[-3])
+                topic_id = int(path_parts[-1])
                 
                 if "subtopic" in path:
-                    subtopic_id = int(path_parts[8])
+                    subtopic_id = int(path_parts[-1])
                     return handle_update_subtopic_status(module_id, topic_id, subtopic_id, data["status"])
                 else:
                     return handle_update_topic_status(module_id, topic_id, data["status"])
