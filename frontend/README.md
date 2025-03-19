@@ -22,7 +22,8 @@ npm run dev
 4. Select your GitHub repository
 5. Configure the build settings:
    - Base directory: `frontend`
-   - Build Command: `rm -rf node_modules && npm install && npm run build`
+   - Build Command: `rm -rf node_modules .next && npm install && npm run build`
+   - Start Command: `npm start`
    - Publish directory: `.next`
 6. Click "Deploy site"
 
