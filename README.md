@@ -2,6 +2,8 @@
 
 A full-stack web application to track progress through a software development curriculum. Built with FastAPI (backend) and Next.js (frontend).
 
+Last updated: 2024-03-19 14:30 UTC
+
 ## Features
 
 - Track progress through multiple modules and topics
