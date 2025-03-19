@@ -3,27 +3,51 @@ from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from datetime import datetime
 import logging
+from enum import Enum
+import json
 
 app = FastAPI(title="Full-Stack Development Progress Tracker")
 
 # Get CORS origins from environment variable or use default
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
+NETLIFY_URL = os.environ.get("NETLIFY_URL", "")
+
+# If we're on Render, add the Render external URL to allowed origins
+allowed_origins = [FRONTEND_URL]
+if RENDER_EXTERNAL_URL:
+    allowed_origins.append(RENDER_EXTERNAL_URL)
+    # Also allow the Render frontend URL
+    if "backend" in RENDER_EXTERNAL_URL:
+        frontend_url = RENDER_EXTERNAL_URL.replace("backend", "frontend")
+        allowed_origins.append(frontend_url)
+
+# Add Netlify URL if it exists
+if NETLIFY_URL:
+    allowed_origins.append(NETLIFY_URL)
+
+# Add common Netlify deployment URLs
+allowed_origins.extend([
+    "https://curriculum-tracker.netlify.app",
+    "https://curriculum-tracker-app.netlify.app",
+])
 
 # Enable CORS with more specific settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["*"],
 )
 
-# Configure logging
+# Setup logging
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Add error handling middleware
 @app.middleware("http")
