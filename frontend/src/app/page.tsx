@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { fetchCurriculum, updateTopicStatus, updateSubtopicStatus } from './api';
 
 interface Subtopic {
   id: number;
@@ -80,85 +81,36 @@ export default function Home() {
            { bg: 'bg-violet-600', ringBg: 'bg-violet-950', ringBorder: 'border-violet-800', text: 'text-violet-300' };
   };
 
-  const fetchCurriculum = async () => {
-    try {
-      const response = await fetch(`${API_URL}/curriculum`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch curriculum: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      setCurriculum(data);
-    } catch (error) {
-      console.error('Error fetching curriculum:', error);
-      setError('Failed to load curriculum data');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchCurriculum();
+    const loadCurriculum = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchCurriculum();
+        setCurriculum(data);
+      } catch (error) {
+        console.error('Error loading curriculum:', error);
+        setError('Failed to load curriculum data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCurriculum();
   }, []);
 
-  const updateTopicStatus = async (moduleId: number, topicId: number, status: string) => {
+  const handleTopicStatusUpdate = async (moduleId: number, topicId: number, status: string) => {
     try {
-      const response = await fetch(
-        `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/status?status=${status}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      // Refresh curriculum data
-      const curriculumResponse = await fetch(`${API_URL}/curriculum`, {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-      if (!curriculumResponse.ok) {
-        throw new Error(`HTTP error! status: ${curriculumResponse.status}`);
-      }
-      const data = await curriculumResponse.json();
+      const data = await updateTopicStatus(moduleId, topicId, status);
       setCurriculum(data);
     } catch (error) {
       console.error('Error updating topic status:', error);
     }
   };
 
-  const updateSubtopicStatus = async (moduleId: number, topicId: number, subtopicId: number, status: string) => {
+  const handleSubtopicStatusUpdate = async (moduleId: number, topicId: number, subtopicId: number, status: string) => {
     try {
-      // Convert the subtopic ID to match backend's structure (e.g., 101, 102, etc.)
-      const backendSubtopicId = topicId * 100 + subtopicId;
-      
-      const response = await fetch(
-        `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${backendSubtopicId}/status?status=${status}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Failed to update subtopic status: ${response.statusText}`);
-      }
-
-      // Refresh curriculum data
-      fetchCurriculum();
+      const data = await updateSubtopicStatus(moduleId, topicId, subtopicId, status);
+      setCurriculum(data);
     } catch (error) {
       console.error('Error updating subtopic status:', error);
     }
@@ -303,7 +255,7 @@ export default function Home() {
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      updateTopicStatus(module.id, topic.id, 'not_started');
+                                      handleTopicStatusUpdate(module.id, topic.id, 'not_started');
                                     }}
                                     className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
                                       topic.status === 'not_started'
@@ -316,7 +268,7 @@ export default function Home() {
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      updateTopicStatus(module.id, topic.id, 'in_progress');
+                                      handleTopicStatusUpdate(module.id, topic.id, 'in_progress');
                                     }}
                                     className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
                                       topic.status === 'in_progress'
@@ -329,7 +281,7 @@ export default function Home() {
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      updateTopicStatus(module.id, topic.id, 'completed');
+                                      handleTopicStatusUpdate(module.id, topic.id, 'completed');
                                     }}
                                     className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
                                       topic.status === 'completed'
@@ -371,7 +323,7 @@ export default function Home() {
                                         <button
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            updateSubtopicStatus(module.id, topic.id, subtopic.id, 'not_started');
+                                            handleSubtopicStatusUpdate(module.id, topic.id, subtopic.id, 'not_started');
                                           }}
                                           className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
                                             subtopic.status === 'not_started'
@@ -384,7 +336,7 @@ export default function Home() {
                                         <button
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            updateSubtopicStatus(module.id, topic.id, subtopic.id, 'in_progress');
+                                            handleSubtopicStatusUpdate(module.id, topic.id, subtopic.id, 'in_progress');
                                           }}
                                           className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
                                             subtopic.status === 'in_progress'
@@ -397,7 +349,7 @@ export default function Home() {
                                         <button
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            updateSubtopicStatus(module.id, topic.id, subtopic.id, 'completed');
+                                            handleSubtopicStatusUpdate(module.id, topic.id, subtopic.id, 'completed');
                                           }}
                                           className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
                                             subtopic.status === 'completed'
