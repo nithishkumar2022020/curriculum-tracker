@@ -1,5 +1,5 @@
 [build]
-  functions = "netlify/functions"
+  command = "pip install -r requirements.txt"
   publish = "public"
 
 [build.environment]
@@ -7,7 +7,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
+  to = "/server.py"
   status = 200
   force = true
 
