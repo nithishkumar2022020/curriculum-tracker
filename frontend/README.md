@@ -24,7 +24,6 @@ npm run dev
    - Base directory: `frontend`
    - Build Command: `rm -rf node_modules .next && npm install && npm run build`
    - Start Command: `npm start`
-   - Publish directory: `.next`
 6. Click "Deploy site"
 
 ### Option 2: Deploy via Render CLI
