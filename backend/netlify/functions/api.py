@@ -218,30 +218,22 @@ def handler(event, context):
 
     # Handle GET requests
     if event["httpMethod"] == "GET":
-        path = event.get("path", "")
-        if path == "/curriculum" or path == "/api/curriculum" or path.endswith("/curriculum"):
-            return handle_get_curriculum()
-        return {
-            "statusCode": 404,
-            "headers": {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
-            },
-            "body": json.dumps({"error": "Not found"})
-        }
+        # For GET /curriculum, just return the curriculum data
+        return handle_get_curriculum()
 
     # Handle PUT requests
     if event["httpMethod"] == "PUT":
         try:
             data = json.loads(event["body"])
-            path = event.get("path", "")
+            path = event.get("path", "").strip("/")
+            path_parts = path.split("/")
             
-            if "/curriculum/module/" in path or "/api/curriculum/module/" in path:
-                path_parts = path.split("/")
+            # Extract IDs from the path
+            if len(path_parts) >= 4 and path_parts[-4] == "module":
                 module_id = int(path_parts[-3])
                 topic_id = int(path_parts[-1])
                 
-                if "subtopic" in path:
+                if "subtopic" in path_parts:
                     subtopic_id = int(path_parts[-1])
                     return handle_update_subtopic_status(module_id, topic_id, subtopic_id, data["status"])
                 else:
