@@ -33,7 +33,9 @@ logger.debug(f"GITHUB_PAGES_URL: {GITHUB_PAGES_URL}")
 allowed_origins = [
     FRONTEND_URL,
     GITHUB_PAGES_URL,
-    "https://nithishkumar2022020.github.io/curriculum-tracker"
+    "https://nithishkumar2022020.github.io/curriculum-tracker",
+    "https://nithishkumar2022020.github.io/curriculum-tracker/",
+    "*"  # Allow all origins temporarily for debugging
 ]
 if RENDER_EXTERNAL_URL:
     allowed_origins.append(RENDER_EXTERNAL_URL)
@@ -59,9 +61,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allow all methods
+    allow_headers=["*"],  # Allow all headers
     expose_headers=["*"],
+    max_age=3600,  # Cache preflight requests for 1 hour
 )
 
 # Add error handling middleware
