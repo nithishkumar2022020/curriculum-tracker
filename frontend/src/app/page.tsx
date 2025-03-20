@@ -86,7 +86,7 @@ export default function Home() {
           actualSubtopicId = subtopicId;
         } else {
           // If it's a sequential number (e.g., 1), convert it to the prefixed format
-          actualSubtopicId = parseInt(String(topicId) + String(subtopicId));
+          actualSubtopicId = parseInt(String(topicId) + String(subtopicId).padStart(2, '0'));
         }
       }
 
