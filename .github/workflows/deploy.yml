@@ -33,9 +33,9 @@ jobs:
       - name: Install and Build
         working-directory: frontend
         run: |
-          rm -rf node_modules package-lock.json
+          rm -rf node_modules package-lock.json .next
           npm install
-          npm install --save-dev typescript @types/react @types/node @types/react-dom
+          npx tsc --init
           npm run build
         env:
           NEXT_PUBLIC_API_URL: https://curriculum-tracker-backend.onrender.com
