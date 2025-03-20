@@ -82,16 +82,12 @@ export async function updateTopicStatus(moduleId: number, topicId: number, statu
 
 export async function updateSubtopicStatus(moduleId: number, topicId: number, subtopicId: number, status: string) {
   try {
-    // Calculate the correct subtopic ID based on the module and topic
-    const calculatedSubtopicId = (moduleId * 100) + subtopicId;
-    
-    const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${calculatedSubtopicId}/status?status=${status}`;
+    const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${subtopicId}/status?status=${status}`;
     console.log('Making API call to:', url, {
       moduleId,
       topicId,
-      subtopicId: calculatedSubtopicId,
-      status,
-      originalSubtopicId: subtopicId
+      subtopicId,
+      status
     });
     
     const response = await fetch(url, {
@@ -112,8 +108,7 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
         params: {
           moduleId,
           topicId,
-          subtopicId: calculatedSubtopicId,
-          originalSubtopicId: subtopicId,
+          subtopicId,
           status
         }
       });
