@@ -73,22 +73,30 @@ export default function Home() {
 
   const handleSubtopicStatusUpdate = async (moduleId: number, topicId: number, subtopicId: number, status: string) => {
     try {
-      console.log('Attempting to update subtopic status with:', {
+      // Find the module, topic, and subtopic in the curriculum data
+      const module = curriculum?.modules.find(m => m.id === moduleId);
+      const topic = module?.topics.find(t => t.id === topicId);
+      const subtopic = topic?.subtopics.find(s => s.id === subtopicId);
+
+      console.log('Attempting to update subtopic status:', {
         moduleId,
         topicId,
         subtopicId,
         status,
-        subtopicData: curriculum?.modules
-          .find(m => m.id === moduleId)
-          ?.topics.find(t => t.id === topicId)
-          ?.subtopics.find(s => s.id === subtopicId)
+        moduleFound: !!module,
+        topicFound: !!topic,
+        subtopicFound: !!subtopic,
+        moduleData: module,
+        topicData: topic,
+        subtopicData: subtopic,
+        allSubtopics: topic?.subtopics.map(s => ({ id: s.id, name: s.name }))
       });
+
       const data = await updateSubtopicStatus(moduleId, topicId, subtopicId, status);
       console.log('Received updated curriculum:', data);
       setCurriculum(data);
     } catch (error) {
       console.error('Error updating subtopic status:', error);
-      // Optionally show an error message to the user
       setError('Failed to update subtopic status. Please try again.');
     }
   };
