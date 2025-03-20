@@ -91,7 +91,10 @@ export default function Home() {
         topicIndex: module?.topics.findIndex(t => t.id === topicId),
         subtopicIndex: topic?.subtopics.findIndex(s => s.id === subtopicId),
         subtopicData: subtopic,
-        allSubtopics: topic?.subtopics.map(s => ({ id: s.id, name: s.name }))
+        allSubtopics: topic?.subtopics.map(s => ({ id: s.id, name: s.name })),
+        isModule1: moduleId === 1,
+        expectedIdFormat: moduleId === 1 ? 'prefixed with topic (e.g., 101)' : 'sequential (1,2,3)',
+        actualIdFormat: String(subtopicId).length > 2 ? 'prefixed' : 'sequential'
       });
       
       // Check for unexpected issues
@@ -102,7 +105,10 @@ export default function Home() {
           mismatchPossible: topic?.subtopics.some(s => 
             (s.id === parseInt(String(subtopicId).substring(1)) && String(subtopicId).length > 2) || 
             (s.id === parseInt(String(topicId) + String(subtopicId)) && String(subtopicId).length === 1)
-          )
+          ),
+          isModule1: moduleId === 1,
+          expectedIdFormat: moduleId === 1 ? 'prefixed with topic (e.g., 101)' : 'sequential (1,2,3)',
+          actualIdFormat: String(subtopicId).length > 2 ? 'prefixed' : 'sequential'
         });
       }
 

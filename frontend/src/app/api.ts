@@ -83,14 +83,20 @@ export async function updateTopicStatus(moduleId: number, topicId: number, statu
 export async function updateSubtopicStatus(moduleId: number, topicId: number, subtopicId: number, status: string) {
   try {
     console.log('%c API CALL DEBUG', 'background: #0000ff; color: white; font-size: 16px;');
-    const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${subtopicId}/status?status=${status}`;
+    
+    // For Module 1, subtopic IDs are prefixed with topic ID (e.g., 101, 102, 201, 202)
+    // For other modules, subtopic IDs are simple sequential numbers (1, 2, 3)
+    const adjustedSubtopicId = moduleId === 1 ? subtopicId : subtopicId;
+    
+    const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${adjustedSubtopicId}/status?status=${status}`;
     console.log('Making API call to update subtopic status:', {
       url,
       API_URL,
       params: {
         moduleId,
         topicId,
-        subtopicId,
+        originalSubtopicId: subtopicId,
+        adjustedSubtopicId,
         status
       }
     });
@@ -115,7 +121,8 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
         params: {
           moduleId,
           topicId,
-          subtopicId,
+          originalSubtopicId: subtopicId,
+          adjustedSubtopicId,
           status
         }
       });
