@@ -22,13 +22,19 @@ app = FastAPI(title="Full-Stack Development Progress Tracker")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
 NETLIFY_URL = os.environ.get("NETLIFY_URL", "")
+GITHUB_PAGES_URL = "https://nithishkumar2022020.github.io"
 
 logger.debug(f"FRONTEND_URL: {FRONTEND_URL}")
 logger.debug(f"RENDER_EXTERNAL_URL: {RENDER_EXTERNAL_URL}")
 logger.debug(f"NETLIFY_URL: {NETLIFY_URL}")
+logger.debug(f"GITHUB_PAGES_URL: {GITHUB_PAGES_URL}")
 
 # If we're on Render, add the Render external URL to allowed origins
-allowed_origins = [FRONTEND_URL]
+allowed_origins = [
+    FRONTEND_URL,
+    GITHUB_PAGES_URL,
+    "https://nithishkumar2022020.github.io/curriculum-tracker"
+]
 if RENDER_EXTERNAL_URL:
     allowed_origins.append(RENDER_EXTERNAL_URL)
     # Also allow the Render frontend URL
