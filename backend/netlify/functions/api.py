@@ -11,7 +11,7 @@ curriculum_data = {
         {
             "id": 1,
             "name": "Backend Development with Python",
-            "description": "8 weeks of Python backend development",
+            "description": "8 weeks of comprehensive Python backend development",
             "duration": "8 weeks",
             "progress": 0.0,
             "status": "not_started",
@@ -19,40 +19,40 @@ curriculum_data = {
                 {
                     "id": 1,
                     "name": "Python Fundamentals (Weeks 1-2)",
-                    "description": "Core syntax, data types, control flow, OOP, and API basics",
+                    "description": "Core Python concepts and initial API development",
                     "duration": "2 weeks",
                     "status": "not_started",
                     "completed_date": None,
                     "subtopics": [
                         {
                             "id": 101,
-                            "name": "Python Syntax & Data Types",
-                            "description": "Basic syntax, variables, data types, control flow",
+                            "name": "Core Python Concepts",
+                            "description": "Python syntax, data types, control flow, functions, modules",
                             "duration": "3 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
                             "id": 102,
-                            "name": "Functions & Modules",
-                            "description": "Function definitions, arguments, return values, modules",
-                            "duration": "2 days",
+                            "name": "Object-Oriented Programming",
+                            "description": "Classes, inheritance, polymorphism, encapsulation",
+                            "duration": "3 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
                             "id": 103,
-                            "name": "Object-Oriented Programming",
-                            "description": "Classes, objects, inheritance, polymorphism",
-                            "duration": "4 days",
+                            "name": "Testing & Debugging",
+                            "description": "Unit testing with pytest, debugging techniques",
+                            "duration": "2 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
                             "id": 104,
-                            "name": "Error Handling & File I/O",
-                            "description": "Try-except blocks, file operations",
-                            "duration": "3 days",
+                            "name": "Weather API Project",
+                            "description": "Build a weather API with caching using public APIs",
+                            "duration": "6 days",
                             "status": "not_started",
                             "completed_date": None
                         }
@@ -60,41 +60,91 @@ curriculum_data = {
                 },
                 {
                     "id": 2,
-                    "name": "Web Development with Flask (Weeks 3-4)",
-                    "description": "Building web applications using Flask framework",
-                    "duration": "2 weeks",
+                    "name": "Database Engineering (Weeks 3-5)",
+                    "description": "SQL, NoSQL, and database integration",
+                    "duration": "3 weeks",
                     "status": "not_started",
                     "completed_date": None,
                     "subtopics": [
                         {
                             "id": 201,
-                            "name": "Flask Basics",
-                            "description": "Routes, views, templates",
-                            "duration": "3 days",
+                            "name": "SQL Fundamentals",
+                            "description": "Queries, joins, normalization, indexing with PostgreSQL",
+                            "duration": "5 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
                             "id": 202,
-                            "name": "Database Integration",
-                            "description": "SQLAlchemy, models, migrations",
+                            "name": "ORM Integration",
+                            "description": "Django ORM/SQLAlchemy for database operations",
                             "duration": "4 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
                             "id": 203,
-                            "name": "Authentication & Authorization",
-                            "description": "User management, login/logout, permissions",
-                            "duration": "3 days",
+                            "name": "MongoDB & NoSQL",
+                            "description": "CRUD operations, aggregation pipelines in MongoDB",
+                            "duration": "5 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
                             "id": 204,
-                            "name": "RESTful APIs",
-                            "description": "API design, endpoints, serialization",
+                            "name": "Library Management System",
+                            "description": "Build a dual-database library system (SQL + NoSQL)",
+                            "duration": "7 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "name": "Production-Grade APIs (Weeks 6-8)",
+                    "description": "Advanced API development and deployment",
+                    "duration": "3 weeks",
+                    "status": "not_started",
+                    "completed_date": None,
+                    "subtopics": [
+                        {
+                            "id": 301,
+                            "name": "Advanced API Frameworks",
+                            "description": "Django REST Framework or Flask-RESTx implementation",
+                            "duration": "5 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 302,
+                            "name": "Authentication & Security",
+                            "description": "JWT, OAuth2, rate limiting implementation",
                             "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 303,
+                            "name": "API Documentation",
+                            "description": "OpenAPI/Swagger documentation and testing",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 304,
+                            "name": "Containerization",
+                            "description": "Docker, Docker Compose for app and database",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 305,
+                            "name": "Task Management API Project",
+                            "description": "Build and deploy a full-featured task management API",
+                            "duration": "5 days",
                             "status": "not_started",
                             "completed_date": None
                         }
