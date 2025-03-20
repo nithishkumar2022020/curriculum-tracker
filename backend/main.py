@@ -35,6 +35,8 @@ allowed_origins = [
     GITHUB_PAGES_URL,
     "https://nithishkumar2022020.github.io/curriculum-tracker",
     "https://nithishkumar2022020.github.io/curriculum-tracker/",
+    "https://curriculum-tracker-frontend.onrender.com",
+    "https://curriculum-tracker-frontend.onrender.com/",
     "*"  # Allow all origins temporarily for debugging
 ]
 if RENDER_EXTERNAL_URL:
