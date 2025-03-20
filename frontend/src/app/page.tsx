@@ -298,7 +298,12 @@ export default function Home() {
                                               subtopicId: subtopic.id,
                                               status: 'not_started'
                                             });
-                                            handleSubtopicStatusUpdate(module.id, topic.id, subtopic.id, 'not_started');
+                                            handleSubtopicStatusUpdate(
+                                              module.id,
+                                              topic.id,
+                                              Number(subtopic.id),
+                                              'not_started'
+                                            );
                                           }}
                                           className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
                                             subtopic.status === 'not_started'
@@ -318,7 +323,12 @@ export default function Home() {
                                               subtopicId: subtopic.id,
                                               status: 'in_progress'
                                             });
-                                            handleSubtopicStatusUpdate(module.id, topic.id, subtopic.id, 'in_progress');
+                                            handleSubtopicStatusUpdate(
+                                              module.id,
+                                              topic.id,
+                                              Number(subtopic.id),
+                                              'in_progress'
+                                            );
                                           }}
                                           className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
                                             subtopic.status === 'in_progress'
@@ -338,7 +348,12 @@ export default function Home() {
                                               subtopicId: subtopic.id,
                                               status: 'completed'
                                             });
-                                            handleSubtopicStatusUpdate(module.id, topic.id, subtopic.id, 'completed');
+                                            handleSubtopicStatusUpdate(
+                                              module.id,
+                                              topic.id,
+                                              Number(subtopic.id),
+                                              'completed'
+                                            );
                                           }}
                                           className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
                                             subtopic.status === 'completed'
