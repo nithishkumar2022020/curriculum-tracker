@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: curriculum-tracker-backend
+    env: python
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: FRONTEND_URL
+        sync: false
+      - key: RENDER_EXTERNAL_URL
+        sync: false
+
+  - type: web
+    name: curriculum-tracker-frontend
+    env: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        sync: false 
