@@ -32,21 +32,30 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Create .env.production
         run: |
           echo "NEXT_PUBLIC_API_URL=https://curriculum-tracker-backend.onrender.com" > .env.production
+          cat .env.production
 
       - name: Build
-        run: npm run build
+        run: |
+          echo "Starting build..."
+          npm run build
+        env:
+          CI: true
+          NODE_ENV: production
+
+      - name: List build output
+        run: |
+          echo "Checking build output..."
+          ls -la out || echo "out directory not found"
 
       - name: Touch .nojekyll
-        run: touch out/.nojekyll
+        run: touch out/.nojekyll || echo "Failed to create .nojekyll"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
