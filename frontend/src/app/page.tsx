@@ -295,13 +295,13 @@ export default function Home() {
                                             console.log('Updating subtopic status:', {
                                               moduleId: module.id,
                                               topicId: topic.id,
-                                              subtopicId: subtopic.id % 100,
+                                              subtopicId: subtopic.id,
                                               status: 'not_started'
                                             });
                                             handleSubtopicStatusUpdate(
                                               module.id,
                                               topic.id,
-                                              subtopic.id % 100,
+                                              subtopic.id,
                                               'not_started'
                                             );
                                           }}
@@ -320,13 +320,13 @@ export default function Home() {
                                             console.log('Updating subtopic status:', {
                                               moduleId: module.id,
                                               topicId: topic.id,
-                                              subtopicId: subtopic.id % 100,
+                                              subtopicId: subtopic.id,
                                               status: 'in_progress'
                                             });
                                             handleSubtopicStatusUpdate(
                                               module.id,
                                               topic.id,
-                                              subtopic.id % 100,
+                                              subtopic.id,
                                               'in_progress'
                                             );
                                           }}
@@ -345,13 +345,13 @@ export default function Home() {
                                             console.log('Updating subtopic status:', {
                                               moduleId: module.id,
                                               topicId: topic.id,
-                                              subtopicId: subtopic.id % 100,
+                                              subtopicId: subtopic.id,
                                               status: 'completed'
                                             });
                                             handleSubtopicStatusUpdate(
                                               module.id,
                                               topic.id,
-                                              subtopic.id % 100,
+                                              subtopic.id,
                                               'completed'
                                             );
                                           }}
