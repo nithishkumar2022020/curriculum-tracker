@@ -20,9 +20,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
 
     steps:
       - name: Checkout
@@ -33,36 +30,20 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Clean npm cache and node_modules
+      - name: Install and Build
+        working-directory: frontend
         run: |
-          npm cache clean --force
           rm -rf node_modules package-lock.json
-
-      - name: Install dependencies
-        run: |
-          npm install --no-package-lock
-          npm install --save-dev @types/node @types/react @types/react-dom typescript eslint eslint-config-next
-
-      - name: Create .env.production
-        run: |
-          echo "NEXT_PUBLIC_API_URL=https://curriculum-tracker-backend.onrender.com" > .env.production
-          cat .env.production
-
-      - name: Build
-        run: |
-          echo "Starting build..."
+          npm install
           npm run build
         env:
+          NEXT_PUBLIC_API_URL: https://curriculum-tracker-backend.onrender.com
           CI: true
           NODE_ENV: production
 
-      - name: List build output
-        run: |
-          echo "Checking build output..."
-          ls -la out || echo "out directory not found"
-
-      - name: Touch .nojekyll
-        run: touch out/.nojekyll || echo "Failed to create .nojekyll"
+      - name: Prepare for deployment
+        working-directory: frontend
+        run: touch out/.nojekyll
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
