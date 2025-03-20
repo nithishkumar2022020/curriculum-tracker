@@ -78,6 +78,7 @@ export default function Home() {
       const topic = module?.topics.find(t => t.id === topicId);
       const subtopic = topic?.subtopics.find(s => s.id === subtopicId);
 
+      console.log('%c DETAILED SUBTOPIC DEBUG', 'background: #ff0000; color: white; font-size: 16px;');
       console.log('Attempting to update subtopic status:', {
         moduleId,
         topicId,
@@ -86,11 +87,24 @@ export default function Home() {
         moduleFound: !!module,
         topicFound: !!topic,
         subtopicFound: !!subtopic,
-        moduleData: module,
-        topicData: topic,
+        moduleIndex: curriculum?.modules.findIndex(m => m.id === moduleId),
+        topicIndex: module?.topics.findIndex(t => t.id === topicId),
+        subtopicIndex: topic?.subtopics.findIndex(s => s.id === subtopicId),
         subtopicData: subtopic,
         allSubtopics: topic?.subtopics.map(s => ({ id: s.id, name: s.name }))
       });
+      
+      // Check for unexpected issues
+      if (!subtopic) {
+        console.error('SUBTOPIC NOT FOUND IN DATA - Detailed info:', {
+          attemptedId: subtopicId, 
+          availableIds: topic?.subtopics.map(s => s.id),
+          mismatchPossible: topic?.subtopics.some(s => 
+            (s.id === parseInt(String(subtopicId).substring(1)) && String(subtopicId).length > 2) || 
+            (s.id === parseInt(String(topicId) + String(subtopicId)) && String(subtopicId).length === 1)
+          )
+        });
+      }
 
       const data = await updateSubtopicStatus(moduleId, topicId, subtopicId, status);
       console.log('Received updated curriculum:', data);
@@ -313,6 +327,7 @@ export default function Home() {
                                               moduleId: module.id,
                                               topicId: topic.id,
                                               subtopicId: subtopic.id,
+                                              subtopicName: subtopic.name,
                                               status: 'not_started'
                                             });
                                             handleSubtopicStatusUpdate(
@@ -338,6 +353,7 @@ export default function Home() {
                                               moduleId: module.id,
                                               topicId: topic.id,
                                               subtopicId: subtopic.id,
+                                              subtopicName: subtopic.name,
                                               status: 'in_progress'
                                             });
                                             handleSubtopicStatusUpdate(
@@ -363,6 +379,7 @@ export default function Home() {
                                               moduleId: module.id,
                                               topicId: topic.id,
                                               subtopicId: subtopic.id,
+                                              subtopicName: subtopic.name,
                                               status: 'completed'
                                             });
                                             handleSubtopicStatusUpdate(

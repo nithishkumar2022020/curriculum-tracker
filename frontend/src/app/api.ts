@@ -82,6 +82,7 @@ export async function updateTopicStatus(moduleId: number, topicId: number, statu
 
 export async function updateSubtopicStatus(moduleId: number, topicId: number, subtopicId: number, status: string) {
   try {
+    console.log('%c API CALL DEBUG', 'background: #0000ff; color: white; font-size: 16px;');
     const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${subtopicId}/status?status=${status}`;
     console.log('Making API call to update subtopic status:', {
       url,
@@ -104,6 +105,7 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error('%c API ERROR', 'background: #ff0000; color: white; font-size: 16px;');
       console.error('API Error:', {
         status: response.status,
         statusText: response.statusText,
@@ -120,6 +122,7 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
       throw new Error(`Failed to update subtopic status: ${response.status} ${response.statusText}`);
     }
 
+    console.log('%c API SUCCESS', 'background: #00ff00; color: black; font-size: 16px;');
     console.log('Subtopic status updated successfully');
     
     // Invalidate cache
