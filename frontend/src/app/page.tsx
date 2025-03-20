@@ -73,7 +73,16 @@ export default function Home() {
 
   const handleSubtopicStatusUpdate = async (moduleId: number, topicId: number, subtopicId: number, status: string) => {
     try {
-      console.log('Updating subtopic status:', { moduleId, topicId, subtopicId, status });
+      console.log('Attempting to update subtopic status with:', {
+        moduleId,
+        topicId,
+        subtopicId,
+        status,
+        subtopicData: curriculum?.modules
+          .find(m => m.id === moduleId)
+          ?.topics.find(t => t.id === topicId)
+          ?.subtopics.find(s => s.id === subtopicId)
+      });
       const data = await updateSubtopicStatus(moduleId, topicId, subtopicId, status);
       console.log('Received updated curriculum:', data);
       setCurriculum(data);

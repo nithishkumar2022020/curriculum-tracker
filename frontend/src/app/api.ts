@@ -83,11 +83,14 @@ export async function updateTopicStatus(moduleId: number, topicId: number, statu
 export async function updateSubtopicStatus(moduleId: number, topicId: number, subtopicId: number, status: string) {
   try {
     const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${subtopicId}/status?status=${status}`;
-    console.log('Making API call to:', url, {
-      moduleId,
-      topicId,
-      subtopicId,
-      status
+    console.log('Making API call to:', {
+      url,
+      params: {
+        moduleId,
+        topicId,
+        subtopicId,
+        status
+      }
     });
     
     const response = await fetch(url, {
