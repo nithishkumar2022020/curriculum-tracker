@@ -37,14 +37,19 @@ allowed_origins = [
     "https://nithishkumar2022020.github.io/curriculum-tracker/",
     "https://curriculum-tracker-frontend.onrender.com",
     "https://curriculum-tracker-frontend.onrender.com/",
+    "http://localhost:3000",
+    "http://localhost:3001",
     "*"  # Allow all origins temporarily for debugging
 ]
+
+# Add Render URLs if available
 if RENDER_EXTERNAL_URL:
     allowed_origins.append(RENDER_EXTERNAL_URL)
     # Also allow the Render frontend URL
     if "backend" in RENDER_EXTERNAL_URL:
         frontend_url = RENDER_EXTERNAL_URL.replace("backend", "frontend")
         allowed_origins.append(frontend_url)
+        allowed_origins.append(frontend_url + "/")
 
 # Add Netlify URL if it exists
 if NETLIFY_URL:

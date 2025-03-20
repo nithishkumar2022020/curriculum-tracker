@@ -1,5 +1,6 @@
 import { Curriculum } from './types';
 
+// Get the API URL from environment variable or use default
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://curriculum-tracker-backend.onrender.com';
 
 // Cache for curriculum data
@@ -22,6 +23,8 @@ export async function fetchCurriculum() {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
       },
+      mode: 'cors', // Explicitly set CORS mode
+      credentials: 'include', // Include credentials if needed
     });
 
     if (!response.ok) {
@@ -56,6 +59,8 @@ export async function updateTopicStatus(moduleId: number, topicId: number, statu
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
+      mode: 'cors', // Explicitly set CORS mode
+      credentials: 'include', // Include credentials if needed
     });
     
     if (!response.ok) {
@@ -86,8 +91,11 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
+      mode: 'cors', // Explicitly set CORS mode
+      credentials: 'include', // Include credentials if needed
     });
 
     if (!response.ok) {
