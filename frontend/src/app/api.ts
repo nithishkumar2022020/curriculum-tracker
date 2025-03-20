@@ -29,7 +29,8 @@ export async function fetchCurriculum() {
       console.error('API Error:', {
         status: response.status,
         statusText: response.statusText,
-        body: errorText
+        body: errorText,
+        url: `${API_URL}/curriculum`
       });
       throw new Error(`Failed to fetch curriculum: ${response.status} ${response.statusText}`);
     }
@@ -46,23 +47,24 @@ export async function fetchCurriculum() {
 
 export async function updateTopicStatus(moduleId: number, topicId: number, status: string) {
   try {
-    const response = await fetch(
-      `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/status?status=${status}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/status?status=${status}`;
+    console.log('Updating topic status:', url);
+    
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
     
     if (!response.ok) {
       const errorText = await response.text();
       console.error('API Error:', {
         status: response.status,
         statusText: response.statusText,
-        body: errorText
+        body: errorText,
+        url
       });
       throw new Error(`Failed to update topic status: ${response.status} ${response.statusText}`);
     }
@@ -78,22 +80,23 @@ export async function updateTopicStatus(moduleId: number, topicId: number, statu
 
 export async function updateSubtopicStatus(moduleId: number, topicId: number, subtopicId: number, status: string) {
   try {
-    const response = await fetch(
-      `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${subtopicId}/status?status=${status}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${subtopicId}/status?status=${status}`;
+    console.log('Updating subtopic status:', url);
+    
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
       console.error('API Error:', {
         status: response.status,
         statusText: response.statusText,
-        body: errorText
+        body: errorText,
+        url
       });
       throw new Error(`Failed to update subtopic status: ${response.status} ${response.statusText}`);
     }
