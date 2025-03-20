@@ -154,75 +154,49 @@ curriculum_data = {
         },
         {
             "id": 2,
-            "name": "Frontend Development",
-            "description": "12 weeks of frontend development",
-            "duration": "12 weeks",
+            "name": "Modern Frontend Development",
+            "description": "8 weeks of comprehensive frontend development",
+            "duration": "8 weeks",
             "progress": 0.0,
             "status": "not_started",
             "topics": [
                 {
-                    "id": 3,
-                    "name": "HTML & CSS Fundamentals (Weeks 1-3)",
-                    "description": "Building blocks of web development",
+                    "id": 4,
+                    "name": "Core Web Technologies (Weeks 1-3)",
+                    "description": "HTML5, CSS3, and modern JavaScript fundamentals",
                     "duration": "3 weeks",
                     "status": "not_started",
                     "completed_date": None,
                     "subtopics": [
                         {
-                            "id": 301,
-                            "name": "HTML5 Basics",
-                            "description": "Document structure, elements, forms",
-                            "duration": "1 week",
-                            "status": "not_started",
-                            "completed_date": None
-                        },
-                        {
-                            "id": 302,
-                            "name": "CSS3 Styling",
-                            "description": "Selectors, box model, layouts",
-                            "duration": "1 week",
-                            "status": "not_started",
-                            "completed_date": None
-                        },
-                        {
-                            "id": 303,
-                            "name": "Responsive Design",
-                            "description": "Media queries, flexbox, grid",
-                            "duration": "1 week",
-                            "status": "not_started",
-                            "completed_date": None
-                        }
-                    ]
-                },
-                {
-                    "id": 4,
-                    "name": "JavaScript & Modern Web (Weeks 4-8)",
-                    "description": "Core JavaScript and modern web development",
-                    "duration": "5 weeks",
-                    "status": "not_started",
-                    "completed_date": None,
-                    "subtopics": [
-                        {
                             "id": 401,
-                            "name": "JavaScript Fundamentals",
-                            "description": "Syntax, functions, DOM manipulation",
-                            "duration": "2 weeks",
+                            "name": "HTML5 & Accessibility",
+                            "description": "Semantic HTML, ARIA roles, responsive images",
+                            "duration": "3 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
                             "id": 402,
-                            "name": "ES6+ Features",
-                            "description": "Modern JavaScript features and syntax",
-                            "duration": "1 week",
+                            "name": "Modern CSS",
+                            "description": "Grid, Flexbox, animations, SCSS, Tailwind CSS",
+                            "duration": "5 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
                             "id": 403,
-                            "name": "Async Programming",
-                            "description": "Promises, async/await, fetch API",
-                            "duration": "2 weeks",
+                            "name": "JavaScript ES6+",
+                            "description": "Modern JS features, DOM manipulation, Fetch API",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 404,
+                            "name": "Recipe Browser Project",
+                            "description": "Build an interactive recipe browser with API integration",
+                            "duration": "7 days",
                             "status": "not_started",
                             "completed_date": None
                         }
@@ -230,41 +204,91 @@ curriculum_data = {
                 },
                 {
                     "id": 5,
-                    "name": "React Development (Weeks 9-12)",
-                    "description": "Building modern web applications with React",
-                    "duration": "4 weeks",
+                    "name": "React & TypeScript (Weeks 4-6)",
+                    "description": "Modern React development with TypeScript",
+                    "duration": "3 weeks",
                     "status": "not_started",
                     "completed_date": None,
                     "subtopics": [
                         {
                             "id": 501,
-                            "name": "React Basics",
-                            "description": "Components, props, state",
-                            "duration": "1 week",
+                            "name": "React Fundamentals",
+                            "description": "Components, props, state, hooks (useState, useEffect)",
+                            "duration": "5 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
                             "id": 502,
-                            "name": "React Hooks",
-                            "description": "useState, useEffect, custom hooks",
-                            "duration": "1 week",
+                            "name": "Advanced React",
+                            "description": "Custom hooks, Context API, React Query",
+                            "duration": "4 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
                             "id": 503,
-                            "name": "State Management",
-                            "description": "Context API, Redux basics",
-                            "duration": "1 week",
+                            "name": "TypeScript Integration",
+                            "description": "Type annotations, interfaces, props typing",
+                            "duration": "4 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
                             "id": 504,
-                            "name": "React Router & APIs",
-                            "description": "Routing, API integration",
-                            "duration": "1 week",
+                            "name": "Form Handling",
+                            "description": "Formik, Yup validation, controlled components",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 505,
+                            "name": "Budget Tracker Project",
+                            "description": "Build a budget tracker with TypeScript and local storage",
+                            "duration": "5 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        }
+                    ]
+                },
+                {
+                    "id": 6,
+                    "name": "Full-Stack Frameworks (Weeks 7-8)",
+                    "description": "Next.js and modern full-stack development",
+                    "duration": "2 weeks",
+                    "status": "not_started",
+                    "completed_date": None,
+                    "subtopics": [
+                        {
+                            "id": 601,
+                            "name": "Next.js Fundamentals",
+                            "description": "App Router, SSR, ISG, API routes",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 602,
+                            "name": "Authentication & Middleware",
+                            "description": "Auth.js integration, protected routes",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 603,
+                            "name": "CMS Integration",
+                            "description": "Headless CMS setup (Strapi/Contentful)",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 604,
+                            "name": "Portfolio Site Project",
+                            "description": "Build a portfolio with blog and CMS integration",
+                            "duration": "4 days",
                             "status": "not_started",
                             "completed_date": None
                         }
