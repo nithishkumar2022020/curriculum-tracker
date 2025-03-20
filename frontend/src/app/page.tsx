@@ -73,10 +73,14 @@ export default function Home() {
 
   const handleSubtopicStatusUpdate = async (moduleId: number, topicId: number, subtopicId: number, status: string) => {
     try {
+      console.log('Updating subtopic status:', { moduleId, topicId, subtopicId, status });
       const data = await updateSubtopicStatus(moduleId, topicId, subtopicId, status);
+      console.log('Received updated curriculum:', data);
       setCurriculum(data);
     } catch (error) {
       console.error('Error updating subtopic status:', error);
+      // Optionally show an error message to the user
+      setError('Failed to update subtopic status. Please try again.');
     }
   };
 
@@ -286,7 +290,14 @@ export default function Home() {
                                       <div className="flex space-x-2">
                                         <button
                                           onClick={(e) => {
+                                            e.preventDefault();
                                             e.stopPropagation();
+                                            console.log('Updating subtopic status:', {
+                                              moduleId: module.id,
+                                              topicId: topic.id,
+                                              subtopicId: subtopic.id,
+                                              status: 'not_started'
+                                            });
                                             handleSubtopicStatusUpdate(module.id, topic.id, subtopic.id, 'not_started');
                                           }}
                                           className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
@@ -299,7 +310,14 @@ export default function Home() {
                                         </button>
                                         <button
                                           onClick={(e) => {
+                                            e.preventDefault();
                                             e.stopPropagation();
+                                            console.log('Updating subtopic status:', {
+                                              moduleId: module.id,
+                                              topicId: topic.id,
+                                              subtopicId: subtopic.id,
+                                              status: 'in_progress'
+                                            });
                                             handleSubtopicStatusUpdate(module.id, topic.id, subtopic.id, 'in_progress');
                                           }}
                                           className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
@@ -312,7 +330,14 @@ export default function Home() {
                                         </button>
                                         <button
                                           onClick={(e) => {
+                                            e.preventDefault();
                                             e.stopPropagation();
+                                            console.log('Updating subtopic status:', {
+                                              moduleId: module.id,
+                                              topicId: topic.id,
+                                              subtopicId: subtopic.id,
+                                              status: 'completed'
+                                            });
                                             handleSubtopicStatusUpdate(module.id, topic.id, subtopic.id, 'completed');
                                           }}
                                           className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
