@@ -5,9 +5,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: '/curriculum-tracker',
-  assetPrefix: '/curriculum-tracker',
+  basePath: process.env.NODE_ENV === 'production' ? '/curriculum-tracker' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/curriculum-tracker' : '',
   trailingSlash: true,
+  distDir: 'out',
 }
 
 module.exports = nextConfig 

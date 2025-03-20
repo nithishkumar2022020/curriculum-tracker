@@ -33,8 +33,15 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Clean npm cache and node_modules
+        run: |
+          npm cache clean --force
+          rm -rf node_modules package-lock.json
+
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install --no-package-lock
+          npm install --save-dev @types/node @types/react @types/react-dom typescript eslint eslint-config-next
 
       - name: Create .env.production
         run: |
