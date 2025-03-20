@@ -298,6 +298,142 @@ curriculum_data = {
         },
         {
             "id": 3,
+            "name": "Full-Stack Integration",
+            "description": "6 weeks of comprehensive full-stack development",
+            "duration": "6 weeks",
+            "progress": 0.0,
+            "status": "not_started",
+            "topics": [
+                {
+                    "id": 7,
+                    "name": "System Design (Weeks 1-2)",
+                    "description": "Modern API design and real-time communication",
+                    "duration": "2 weeks",
+                    "status": "not_started",
+                    "completed_date": None,
+                    "subtopics": [
+                        {
+                            "id": 701,
+                            "name": "API Architecture",
+                            "description": "REST vs GraphQL, hybrid approaches, Apollo integration",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 702,
+                            "name": "Real-Time Communication",
+                            "description": "WebSockets with Socket.IO, Redis pub/sub",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 703,
+                            "name": "File Management",
+                            "description": "S3 presigned URLs, large file handling",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 704,
+                            "name": "Real-Time Polling Project",
+                            "description": "Build a polling app with live updates using WebSocket and Redis",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        }
+                    ]
+                },
+                {
+                    "id": 8,
+                    "name": "DevOps Foundations (Weeks 3-4)",
+                    "description": "Containerization and deployment automation",
+                    "duration": "2 weeks",
+                    "status": "not_started",
+                    "completed_date": None,
+                    "subtopics": [
+                        {
+                            "id": 801,
+                            "name": "Containerization",
+                            "description": "Docker Compose, multi-container applications",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 802,
+                            "name": "Load Balancing",
+                            "description": "NGINX setup, SSL termination, reverse proxy",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 803,
+                            "name": "CI/CD & Quality",
+                            "description": "GitHub Actions, SonarCloud integration",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 804,
+                            "name": "Task API Deployment",
+                            "description": "Deploy containerized Task API to AWS EC2/ECS",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        }
+                    ]
+                },
+                {
+                    "id": 9,
+                    "name": "Security & Testing (Weeks 5-6)",
+                    "description": "Application security and comprehensive testing",
+                    "duration": "2 weeks",
+                    "status": "not_started",
+                    "completed_date": None,
+                    "subtopics": [
+                        {
+                            "id": 901,
+                            "name": "Security Implementation",
+                            "description": "OWASP Top 10, CSP headers, XSS protection",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 902,
+                            "name": "Testing Strategy",
+                            "description": "Unit testing with Jest/RTL, E2E with Playwright",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 903,
+                            "name": "Performance Testing",
+                            "description": "Load testing with k6, traffic simulation",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 904,
+                            "name": "Secure Chat Project",
+                            "description": "Build a secure real-time chat app with testing",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 4,
             "name": "Database Management",
             "description": "6 weeks of database design and management",
             "duration": "6 weeks",
@@ -401,7 +537,7 @@ curriculum_data = {
             ]
         },
         {
-            "id": 4,
+            "id": 5,
             "name": "DevOps & Deployment",
             "description": "4 weeks of DevOps practices and deployment",
             "duration": "4 weeks",
@@ -489,7 +625,7 @@ curriculum_data = {
             ]
         },
         {
-            "id": 5,
+            "id": 6,
             "name": "System Design & Architecture",
             "description": "4 weeks of system design principles",
             "duration": "4 weeks",
