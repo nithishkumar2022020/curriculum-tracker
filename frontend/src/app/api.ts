@@ -86,7 +86,15 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
     
     // For Module 1, subtopic IDs are prefixed with topic ID (e.g., 101, 102, 201, 202)
     // For other modules, subtopic IDs are simple sequential numbers (1, 2, 3)
-    const adjustedSubtopicId = moduleId === 1 ? subtopicId : subtopicId;
+    let adjustedSubtopicId = subtopicId;
+    
+    if (moduleId === 1) {
+      // If the subtopic ID is already prefixed (e.g., 201), use it as is
+      // If it's not prefixed (e.g., 1), prefix it with the topic ID
+      if (String(subtopicId).length <= 2) {
+        adjustedSubtopicId = parseInt(String(topicId) + String(subtopicId));
+      }
+    }
     
     const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${adjustedSubtopicId}/status?status=${status}`;
     console.log('Making API call to update subtopic status:', {
@@ -97,7 +105,10 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
         topicId,
         originalSubtopicId: subtopicId,
         adjustedSubtopicId,
-        status
+        status,
+        isModule1: moduleId === 1,
+        idLength: String(subtopicId).length,
+        needsPrefix: moduleId === 1 && String(subtopicId).length <= 2
       }
     });
     
@@ -123,7 +134,10 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
           topicId,
           originalSubtopicId: subtopicId,
           adjustedSubtopicId,
-          status
+          status,
+          isModule1: moduleId === 1,
+          idLength: String(subtopicId).length,
+          needsPrefix: moduleId === 1 && String(subtopicId).length <= 2
         }
       });
       throw new Error(`Failed to update subtopic status: ${response.status} ${response.statusText}`);
