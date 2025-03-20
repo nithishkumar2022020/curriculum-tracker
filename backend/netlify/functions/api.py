@@ -536,85 +536,157 @@ curriculum_data = {
         },
         {
             "id": 5,
-            "name": "DevOps & Deployment",
-            "description": "4 weeks of DevOps practices and deployment",
-            "duration": "4 weeks",
+            "name": "Advanced Specialization",
+            "description": "8 weeks of advanced system design and performance optimization",
+            "duration": "8 weeks",
             "progress": 0.0,
             "status": "not_started",
             "topics": [
                 {
-                    "id": 9,
-                    "name": "Version Control & Git (Week 1)",
-                    "description": "Source control and collaboration",
-                    "duration": "1 week",
+                    "id": 12,
+                    "name": "Microservices (Weeks 1-3)",
+                    "description": "Advanced microservices architecture and implementation",
+                    "duration": "3 weeks",
                     "status": "not_started",
                     "completed_date": None,
                     "subtopics": [
                         {
-                            "id": 901,
-                            "name": "Git Basics",
-                            "description": "Repositories, commits, branches",
+                            "id": 1201,
+                            "name": "Domain-Driven Design",
+                            "description": "Bounded contexts, microservice boundaries, DDD principles",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 1202,
+                            "name": "Service Communication",
+                            "description": "gRPC implementation, service discovery, load balancing",
+                            "duration": "5 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 1203,
+                            "name": "Event-Driven Architecture",
+                            "description": "RabbitMQ/Kafka setup, event sourcing patterns",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 1204,
+                            "name": "Distributed Tracing",
+                            "description": "Jaeger/Zipkin implementation for service monitoring",
                             "duration": "3 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
-                            "id": 902,
-                            "name": "Collaboration",
-                            "description": "Pull requests, merge conflicts",
-                            "duration": "2 days",
+                            "id": 1205,
+                            "name": "E-Commerce Services Project",
+                            "description": "Build cart and inventory microservices with event streaming",
+                            "duration": "5 days",
                             "status": "not_started",
                             "completed_date": None
                         }
                     ]
                 },
                 {
-                    "id": 10,
-                    "name": "CI/CD (Week 2)",
-                    "description": "Continuous Integration and Deployment",
-                    "duration": "1 week",
+                    "id": 13,
+                    "name": "Performance Mastery (Weeks 4-6)",
+                    "description": "Advanced caching and performance optimization",
+                    "duration": "3 weeks",
                     "status": "not_started",
                     "completed_date": None,
                     "subtopics": [
                         {
-                            "id": 1001,
-                            "name": "CI Pipelines",
-                            "description": "Build automation, testing",
+                            "id": 1301,
+                            "name": "Caching Strategies",
+                            "description": "Redis implementation, cache invalidation, TTL",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 1302,
+                            "name": "Content Delivery",
+                            "description": "CDN setup, static asset optimization",
                             "duration": "3 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
-                            "id": 1002,
-                            "name": "CD Practices",
-                            "description": "Deployment strategies, monitoring",
-                            "duration": "2 days",
+                            "id": 1303,
+                            "name": "Database Optimization",
+                            "description": "Sharding, replication, query optimization",
+                            "duration": "5 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 1304,
+                            "name": "Load Testing",
+                            "description": "Performance testing, bottleneck identification",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 1305,
+                            "name": "News API Project",
+                            "description": "Build high-traffic news API with caching and optimization",
+                            "duration": "6 days",
                             "status": "not_started",
                             "completed_date": None
                         }
                     ]
                 },
                 {
-                    "id": 11,
-                    "name": "Cloud Services (Weeks 3-4)",
-                    "description": "AWS and cloud deployment",
+                    "id": 14,
+                    "name": "Capstone Project (Weeks 7-8)",
+                    "description": "Final project combining advanced technologies",
                     "duration": "2 weeks",
                     "status": "not_started",
                     "completed_date": None,
                     "subtopics": [
                         {
-                            "id": 1101,
-                            "name": "AWS Basics",
-                            "description": "EC2, S3, RDS services",
-                            "duration": "1 week",
+                            "id": 1401,
+                            "name": "Real-Time Features",
+                            "description": "WebSocket/SSE implementation for notifications",
+                            "duration": "3 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
-                            "id": 1102,
-                            "name": "Serverless",
-                            "description": "Lambda, API Gateway",
-                            "duration": "1 week",
+                            "id": 1402,
+                            "name": "AI Integration",
+                            "description": "Recommendation engine with collaborative filtering",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 1403,
+                            "name": "Kubernetes Deployment",
+                            "description": "Container orchestration and scaling",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 1404,
+                            "name": "Payment Integration",
+                            "description": "Stripe/PayPal gateway implementation",
+                            "duration": "2 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 1405,
+                            "name": "Social Platform Project",
+                            "description": "Complete social platform with all features integrated",
+                            "duration": "3 days",
                             "status": "not_started",
                             "completed_date": None
                         }
