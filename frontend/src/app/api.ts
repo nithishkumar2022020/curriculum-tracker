@@ -78,10 +78,8 @@ export async function updateTopicStatus(moduleId: number, topicId: number, statu
 
 export async function updateSubtopicStatus(moduleId: number, topicId: number, subtopicId: number, status: string) {
   try {
-    const backendSubtopicId = topicId * 100 + subtopicId;
-    
     const response = await fetch(
-      `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${backendSubtopicId}/status?status=${status}`,
+      `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${subtopicId}/status?status=${status}`,
       {
         method: 'PUT',
         headers: {
