@@ -78,41 +78,38 @@ export default function Home() {
       const topic = module?.topics.find(t => t.id === topicId);
       const subtopic = topic?.subtopics.find(s => s.id === subtopicId);
 
-      console.log('%c DETAILED SUBTOPIC DEBUG', 'background: #ff0000; color: white; font-size: 16px;');
-      console.log('Attempting to update subtopic status:', {
+      // For Module 1, we need to handle the prefixed IDs (e.g., 101, 102)
+      let actualSubtopicId = subtopicId;
+      if (moduleId === 1) {
+        // If the subtopic ID is already in the correct format (e.g., 101), use it as is
+        if (String(subtopicId).length > 2) {
+          actualSubtopicId = subtopicId;
+        } else {
+          // If it's a sequential number (e.g., 1), convert it to the prefixed format
+          actualSubtopicId = parseInt(String(topicId) + String(subtopicId));
+        }
+      }
+
+      console.log('Updating subtopic status:', {
         moduleId,
         topicId,
-        subtopicId,
+        originalSubtopicId: subtopicId,
+        actualSubtopicId,
         status,
         moduleFound: !!module,
         topicFound: !!topic,
         subtopicFound: !!subtopic,
         moduleIndex: curriculum?.modules.findIndex(m => m.id === moduleId),
         topicIndex: module?.topics.findIndex(t => t.id === topicId),
-        subtopicIndex: topic?.subtopics.findIndex(s => s.id === subtopicId),
+        subtopicIndex: topic?.subtopics.findIndex(s => s.id === actualSubtopicId),
         subtopicData: subtopic,
         allSubtopics: topic?.subtopics.map(s => ({ id: s.id, name: s.name })),
         isModule1: moduleId === 1,
         expectedIdFormat: moduleId === 1 ? 'prefixed with topic (e.g., 101)' : 'sequential (1,2,3)',
-        actualIdFormat: String(subtopicId).length > 2 ? 'prefixed' : 'sequential'
+        actualIdFormat: String(actualSubtopicId).length > 2 ? 'prefixed' : 'sequential'
       });
-      
-      // Check for unexpected issues
-      if (!subtopic) {
-        console.error('SUBTOPIC NOT FOUND IN DATA - Detailed info:', {
-          attemptedId: subtopicId, 
-          availableIds: topic?.subtopics.map(s => s.id),
-          mismatchPossible: topic?.subtopics.some(s => 
-            (s.id === parseInt(String(subtopicId).substring(1)) && String(subtopicId).length > 2) || 
-            (s.id === parseInt(String(topicId) + String(subtopicId)) && String(subtopicId).length === 1)
-          ),
-          isModule1: moduleId === 1,
-          expectedIdFormat: moduleId === 1 ? 'prefixed with topic (e.g., 101)' : 'sequential (1,2,3)',
-          actualIdFormat: String(subtopicId).length > 2 ? 'prefixed' : 'sequential'
-        });
-      }
 
-      const data = await updateSubtopicStatus(moduleId, topicId, subtopicId, status);
+      const data = await updateSubtopicStatus(moduleId, topicId, actualSubtopicId, status);
       console.log('Received updated curriculum:', data);
       setCurriculum(data);
     } catch (error) {
@@ -262,7 +259,7 @@ export default function Home() {
                                       e.stopPropagation();
                                       handleTopicStatusUpdate(module.id, topic.id, 'not_started');
                                     }}
-                                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
+                                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
                                       topic.status === 'not_started'
                                         ? 'bg-gray-700 text-white ring-2 ring-gray-600'
                                         : 'bg-[#121212] text-gray-400 hover:bg-gray-700 hover:text-white'
@@ -275,7 +272,7 @@ export default function Home() {
                                       e.stopPropagation();
                                       handleTopicStatusUpdate(module.id, topic.id, 'in_progress');
                                     }}
-                                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
+                                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
                                       topic.status === 'in_progress'
                                         ? 'bg-blue-900 text-blue-100 ring-2 ring-blue-700'
                                         : 'bg-[#121212] text-gray-400 hover:bg-blue-900 hover:text-blue-100'
@@ -288,7 +285,7 @@ export default function Home() {
                                       e.stopPropagation();
                                       handleTopicStatusUpdate(module.id, topic.id, 'completed');
                                     }}
-                                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
+                                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
                                       topic.status === 'completed'
                                         ? 'bg-green-900 text-green-100 ring-2 ring-green-700'
                                         : 'bg-[#121212] text-gray-400 hover:bg-green-900 hover:text-green-100'
@@ -343,7 +340,7 @@ export default function Home() {
                                               'not_started'
                                             );
                                           }}
-                                          className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
+                                          className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
                                             subtopic.status === 'not_started'
                                               ? 'bg-gray-700 text-white ring-2 ring-gray-600'
                                               : 'bg-[#121212] text-gray-400 hover:bg-gray-700 hover:text-white'
@@ -369,7 +366,7 @@ export default function Home() {
                                               'in_progress'
                                             );
                                           }}
-                                          className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
+                                          className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
                                             subtopic.status === 'in_progress'
                                               ? 'bg-blue-900 text-blue-100 ring-2 ring-blue-700'
                                               : 'bg-[#121212] text-gray-400 hover:bg-blue-900 hover:text-blue-100'
@@ -395,7 +392,7 @@ export default function Home() {
                                               'completed'
                                             );
                                           }}
-                                          className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
+                                          className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
                                             subtopic.status === 'completed'
                                               ? 'bg-green-900 text-green-100 ring-2 ring-green-700'
                                               : 'bg-[#121212] text-gray-400 hover:bg-green-900 hover:text-green-100'
