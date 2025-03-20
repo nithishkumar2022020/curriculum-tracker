@@ -20,6 +20,7 @@ var/
 .installed.cfg
 *.egg
 venv/
+.venv/
 
 # Node.js
 node_modules/
@@ -44,4 +45,8 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
-*.swo 
+*.swo
+
+# Project specific
+netlify/
+Procfile 
