@@ -434,101 +434,99 @@ curriculum_data = {
         },
         {
             "id": 4,
-            "name": "Database Management",
-            "description": "6 weeks of database design and management",
+            "name": "ML & Cloud-Native Development",
+            "description": "6 weeks of machine learning and cloud architecture",
             "duration": "6 weeks",
             "progress": 0.0,
             "status": "not_started",
             "topics": [
                 {
-                    "id": 6,
-                    "name": "SQL Fundamentals (Weeks 1-2)",
-                    "description": "Core SQL concepts and database design",
-                    "duration": "2 weeks",
+                    "id": 10,
+                    "name": "ML Engineering (Weeks 1-3)",
+                    "description": "Machine learning model development and deployment",
+                    "duration": "3 weeks",
                     "status": "not_started",
                     "completed_date": None,
                     "subtopics": [
                         {
-                            "id": 601,
-                            "name": "Database Design",
-                            "description": "ERD, normalization, relationships",
+                            "id": 1001,
+                            "name": "Data Processing",
+                            "description": "Data manipulation with Pandas, cleaning and analysis",
                             "duration": "4 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
-                            "id": 602,
-                            "name": "SQL Queries",
-                            "description": "SELECT, INSERT, UPDATE, DELETE",
+                            "id": 1002,
+                            "name": "Model Development",
+                            "description": "Scikit-learn pipelines, training, and evaluation",
                             "duration": "5 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
-                            "id": 603,
-                            "name": "Advanced SQL",
-                            "description": "Joins, subqueries, indexes",
-                            "duration": "5 days",
+                            "id": 1003,
+                            "name": "Model Optimization",
+                            "description": "ONNX runtime for model optimization",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 1004,
+                            "name": "Model Monitoring",
+                            "description": "Prometheus and Grafana for performance metrics",
+                            "duration": "3 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 1005,
+                            "name": "Sentiment Analysis Project",
+                            "description": "Build a sentiment analysis API with React dashboard",
+                            "duration": "6 days",
                             "status": "not_started",
                             "completed_date": None
                         }
                     ]
                 },
                 {
-                    "id": 7,
-                    "name": "NoSQL Databases (Weeks 3-4)",
-                    "description": "MongoDB and document databases",
-                    "duration": "2 weeks",
+                    "id": 11,
+                    "name": "Cloud Architecture (Weeks 4-6)",
+                    "description": "AWS services and infrastructure automation",
+                    "duration": "3 weeks",
                     "status": "not_started",
                     "completed_date": None,
                     "subtopics": [
                         {
-                            "id": 701,
-                            "name": "MongoDB Basics",
-                            "description": "Documents, collections, CRUD operations",
-                            "duration": "1 week",
-                            "status": "not_started",
-                            "completed_date": None
-                        },
-                        {
-                            "id": 702,
-                            "name": "Advanced MongoDB",
-                            "description": "Aggregation, indexing, optimization",
-                            "duration": "1 week",
-                            "status": "not_started",
-                            "completed_date": None
-                        }
-                    ]
-                },
-                {
-                    "id": 8,
-                    "name": "Database Administration (Weeks 5-6)",
-                    "description": "Management, optimization, and security",
-                    "duration": "2 weeks",
-                    "status": "not_started",
-                    "completed_date": None,
-                    "subtopics": [
-                        {
-                            "id": 801,
-                            "name": "Performance Tuning",
-                            "description": "Query optimization, indexing strategies",
+                            "id": 1101,
+                            "name": "AWS Storage",
+                            "description": "S3 for object storage and file management",
                             "duration": "4 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
-                            "id": 802,
-                            "name": "Backup & Recovery",
-                            "description": "Backup strategies, disaster recovery",
-                            "duration": "3 days",
+                            "id": 1102,
+                            "name": "Serverless Computing",
+                            "description": "AWS Lambda functions and API Gateway",
+                            "duration": "5 days",
                             "status": "not_started",
                             "completed_date": None
                         },
                         {
-                            "id": 803,
-                            "name": "Security",
-                            "description": "Authentication, authorization, encryption",
-                            "duration": "3 days",
+                            "id": 1103,
+                            "name": "Infrastructure as Code",
+                            "description": "Terraform for cloud resource provisioning",
+                            "duration": "4 days",
+                            "status": "not_started",
+                            "completed_date": None
+                        },
+                        {
+                            "id": 1104,
+                            "name": "Image Processing Pipeline",
+                            "description": "Build end-to-end serverless image processing pipeline",
+                            "duration": "8 days",
                             "status": "not_started",
                             "completed_date": None
                         }
