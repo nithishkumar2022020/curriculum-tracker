@@ -19,12 +19,11 @@ export async function fetchCurriculum() {
   try {
     console.log('Fetching curriculum from:', API_URL);
     const response = await fetch(`${API_URL}/curriculum`, {
+      method: 'GET',
       headers: {
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache',
       },
-      mode: 'cors', // Explicitly set CORS mode
-      credentials: 'include', // Include credentials if needed
     });
 
     if (!response.ok) {
@@ -59,8 +58,6 @@ export async function updateTopicStatus(moduleId: number, topicId: number, statu
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
-      mode: 'cors', // Explicitly set CORS mode
-      credentials: 'include', // Include credentials if needed
     });
     
     if (!response.ok) {
@@ -86,7 +83,7 @@ export async function updateTopicStatus(moduleId: number, topicId: number, statu
 export async function updateSubtopicStatus(moduleId: number, topicId: number, subtopicId: number, status: string) {
   try {
     const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${subtopicId}/status?status=${status}`;
-    console.log('Updating subtopic status:', url);
+    console.log('Making API call to:', url);
     
     const response = await fetch(url, {
       method: 'PUT',
@@ -94,8 +91,6 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
-      mode: 'cors', // Explicitly set CORS mode
-      credentials: 'include', // Include credentials if needed
     });
 
     if (!response.ok) {
@@ -109,6 +104,8 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
       throw new Error(`Failed to update subtopic status: ${response.status} ${response.statusText}`);
     }
 
+    console.log('Subtopic status updated successfully');
+    
     // Invalidate cache
     curriculumCache = null;
     return await fetchCurriculum();
