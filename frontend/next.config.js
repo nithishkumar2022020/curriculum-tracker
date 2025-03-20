@@ -6,7 +6,8 @@ const nextConfig = {
     unoptimized: true,
   },
   basePath: '/curriculum-tracker',
-  assetPrefix: '/curriculum-tracker/',
+  assetPrefix: '/curriculum-tracker',
+  trailingSlash: true,
 }
 
 module.exports = nextConfig 
