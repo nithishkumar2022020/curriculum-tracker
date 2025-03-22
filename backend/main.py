@@ -38,8 +38,7 @@ allowed_origins = [
     "https://curriculum-tracker-frontend.onrender.com",
     "https://curriculum-tracker-frontend.onrender.com/",
     "http://localhost:3000",
-    "http://localhost:3001",
-    "*"  # Allow all origins temporarily for debugging
+    "http://localhost:3001"
 ]
 
 # Add Render URLs if available

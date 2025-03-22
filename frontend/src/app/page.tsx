@@ -15,7 +15,7 @@ export default function Home() {
 
   // Toggle module expansion
   const toggleModule = (moduleId: number) => {
-    setExpandedModules(prev => ({
+    setExpandedModules((prev: Record<number, boolean>) => ({
       ...prev,
       [moduleId]: !prev[moduleId]
     }));
@@ -24,7 +24,7 @@ export default function Home() {
   // Toggle topic expansion
   const toggleTopic = (moduleId: number, topicId: number) => {
     const key = `${moduleId}-${topicId}`;
-    setExpandedTopics(prev => ({
+    setExpandedTopics((prev: Record<string, boolean>) => ({
       ...prev,
       [key]: !prev[key]
     }));
@@ -78,6 +78,12 @@ export default function Home() {
       const topic = module?.topics.find(t => t.id === topicId);
       const subtopic = topic?.subtopics.find(s => s.id === subtopicId);
 
+      if (!module || !topic || !subtopic) {
+        console.error('Could not find subtopic:', { moduleId, topicId, subtopicId });
+        setError('Could not find the specified subtopic. Please try again.');
+        return;
+      }
+
       // For Module 1, we need to handle the prefixed IDs (e.g., 101, 102)
       let actualSubtopicId = subtopicId;
       if (moduleId === 1) {
@@ -112,6 +118,7 @@ export default function Home() {
       const data = await updateSubtopicStatus(moduleId, topicId, actualSubtopicId, status);
       console.log('Received updated curriculum:', data);
       setCurriculum(data);
+      setError(null); // Clear any previous errors
     } catch (error) {
       console.error('Error updating subtopic status:', error);
       setError('Failed to update subtopic status. Please try again.');

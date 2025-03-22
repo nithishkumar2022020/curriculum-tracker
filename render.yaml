@@ -6,15 +6,15 @@ services:
     startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: FRONTEND_URL
-        sync: false
+        value: https://curriculum-tracker-frontend.onrender.com
       - key: RENDER_EXTERNAL_URL
-        sync: false
+        value: https://curriculum-tracker-backend.onrender.com
 
   - type: web
     name: curriculum-tracker-frontend
     env: node
     buildCommand: cd frontend && npm install && npm run build
-    startCommand: cd frontend && npm start
+    startCommand: cd frontend && npm run build && npm start
     envVars:
       - key: NEXT_PUBLIC_API_URL
-        sync: false 
+        value: https://curriculum-tracker-backend.onrender.com 

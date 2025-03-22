@@ -92,7 +92,7 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
       // If the subtopic ID is already prefixed (e.g., 201), use it as is
       // If it's not prefixed (e.g., 1), prefix it with the topic ID
       if (String(subtopicId).length <= 2) {
-        adjustedSubtopicId = parseInt(String(topicId) + String(subtopicId));
+        adjustedSubtopicId = parseInt(String(topicId) + String(subtopicId).padStart(2, '0'));
       }
     }
     
