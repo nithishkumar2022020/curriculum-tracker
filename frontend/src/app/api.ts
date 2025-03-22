@@ -1,7 +1,7 @@
 import { Curriculum } from './types';
 
 // Get the API URL from environment variable or use default
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://curriculum-tracker-new-backend.onrender.com';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://curriculum-tracker-backend.onrender.com';
 
 // Cache for curriculum data
 let curriculumCache: Curriculum | null = null;
