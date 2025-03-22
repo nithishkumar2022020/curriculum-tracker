@@ -1,12 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  reactStrictMode: true,
+  output: 'export',
   images: {
     unoptimized: true,
   },
-  env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://curriculum-tracker-backend.onrender.com',
-  },
+  basePath: process.env.NODE_ENV === 'production' ? '/curriculum-tracker' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/curriculum-tracker' : '',
+  trailingSlash: true,
+  distDir: 'out',
 }
 
 module.exports = nextConfig 
