@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="Full-Stack Development Progress Tracker")
 
 # Get CORS origins from environment variable or use default
-FRONTEND_URL = os.getenv("FRONTEND_URL", "https://curriculum-tracker-frontend.onrender.com")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://curriculum-tracker-new-frontend.onrender.com")
 RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
 NETLIFY_URL = os.getenv("NETLIFY_URL", "")
 GITHUB_PAGES_URL = os.getenv("GITHUB_PAGES_URL", "https://nithishkumar2022020.github.io")
@@ -35,8 +35,8 @@ allowed_origins = [
     f"{GITHUB_PAGES_URL}",
     f"{GITHUB_PAGES_URL}/curriculum-tracker",
     f"{GITHUB_PAGES_URL}/curriculum-tracker/",
-    "https://curriculum-tracker-frontend.onrender.com",
-    "https://curriculum-tracker-frontend.onrender.com/",
+    "https://curriculum-tracker-new-frontend.onrender.com",
+    "https://curriculum-tracker-new-frontend.onrender.com/",
     "http://localhost:3000",
     "http://localhost:3001",
     "http://localhost:3002",
