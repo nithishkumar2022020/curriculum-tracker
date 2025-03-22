@@ -19,26 +19,30 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="Full-Stack Development Progress Tracker")
 
 # Get CORS origins from environment variable or use default
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://nithishkumar2022020.github.io/curriculum-tracker")
 RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
-NETLIFY_URL = os.environ.get("NETLIFY_URL", "")
-GITHUB_PAGES_URL = "https://nithishkumar2022020.github.io"
+NETLIFY_URL = os.getenv("NETLIFY_URL", "")
+GITHUB_PAGES_URL = os.getenv("GITHUB_PAGES_URL", "https://nithishkumar2022020.github.io")
 
 logger.debug(f"FRONTEND_URL: {FRONTEND_URL}")
 logger.debug(f"RENDER_EXTERNAL_URL: {RENDER_EXTERNAL_URL}")
 logger.debug(f"NETLIFY_URL: {NETLIFY_URL}")
 logger.debug(f"GITHUB_PAGES_URL: {GITHUB_PAGES_URL}")
 
-# If we're on Render, add the Render external URL to allowed origins
+# Define allowed origins
 allowed_origins = [
     FRONTEND_URL,
-    GITHUB_PAGES_URL,
-    "https://nithishkumar2022020.github.io/curriculum-tracker",
-    "https://nithishkumar2022020.github.io/curriculum-tracker/",
+    f"{GITHUB_PAGES_URL}",
+    f"{GITHUB_PAGES_URL}/curriculum-tracker",
+    f"{GITHUB_PAGES_URL}/curriculum-tracker/",
     "https://curriculum-tracker-frontend.onrender.com",
     "https://curriculum-tracker-frontend.onrender.com/",
     "http://localhost:3000",
-    "http://localhost:3001"
+    "http://localhost:3001",
+    "http://localhost:3002",
+    "http://localhost:3003",  # Added port 3003
+    "https://curriculum-tracker.netlify.app",
+    "https://curriculum-tracker-app.netlify.app"
 ]
 
 # Add Render URLs if available
@@ -65,7 +69,7 @@ logger.debug(f"Allowed origins: {allowed_origins}")
 # Enable CORS with more specific settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=["*"],  # Allow all origins for development
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods
     allow_headers=["*"],  # Allow all headers
@@ -78,6 +82,9 @@ app.add_middleware(
 async def error_handling_middleware(request: Request, call_next):
     try:
         logger.debug(f"Request path: {request.url.path}")
+        logger.debug(f"Request method: {request.method}")
+        logger.debug(f"Request headers: {request.headers}")
+        
         response = await call_next(request)
         logger.debug(f"Response status: {response.status_code}")
         return response
