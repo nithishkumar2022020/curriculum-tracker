@@ -1,13 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  output: 'standalone',
   images: {
     unoptimized: true,
   },
-  basePath: '/curriculum-tracker',
-  assetPrefix: '/curriculum-tracker/',
-  trailingSlash: true,
-  distDir: 'out',
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://curriculum-tracker-backend.onrender.com',
+  },
 }
 
 module.exports = nextConfig 
