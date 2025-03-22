@@ -949,14 +949,22 @@ async def update_subtopic_status(module_id: int, topic_id: int, subtopic_id: int
     logging.info(f"Updating status for module {module_id}, topic {topic_id}, subtopic {subtopic_id} to {status}")
     if status not in ["not_started", "in_progress", "completed"]:
         raise HTTPException(status_code=400, detail="Invalid status value")
-        
+    
+    # For Module 1, handle both prefixed and non-prefixed subtopic IDs
+    actual_subtopic_id = subtopic_id
+    if module_id == 1:
+        # If the subtopic ID is already prefixed (e.g., 201), use it as is
+        # If it's not prefixed (e.g., 1), prefix it with the topic ID
+        if len(str(subtopic_id)) <= 2:
+            actual_subtopic_id = int(str(topic_id) + str(subtopic_id).zfill(2))
+    
     subtopic_found = False
     for module in curriculum_data["modules"]:
         if module["id"] == module_id:
             for topic in module["topics"]:
                 if topic["id"] == topic_id:
                     for subtopic in topic.get("subtopics", []):
-                        if subtopic["id"] == subtopic_id:
+                        if subtopic["id"] == actual_subtopic_id:
                             subtopic_found = True
                             subtopic["status"] = status
                             if status == "completed":
@@ -992,7 +1000,7 @@ async def update_subtopic_status(module_id: int, topic_id: int, subtopic_id: int
                             return {"message": "Status updated successfully"}
     
     if not subtopic_found:
-        logging.error(f"Subtopic {subtopic_id} not found in topic {topic_id} of module {module_id}")
+        logging.error(f"Subtopic {actual_subtopic_id} not found in topic {topic_id} of module {module_id}")
         raise HTTPException(status_code=404, detail="Subtopic not found")
     raise HTTPException(status_code=500, detail="Internal server error")
 
