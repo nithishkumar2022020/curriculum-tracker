@@ -946,63 +946,79 @@ async def update_topic_status(module_id: int, topic_id: int, status: str):
 
 @app.put("/curriculum/module/{module_id}/topic/{topic_id}/subtopic/{subtopic_id}/status")
 async def update_subtopic_status(module_id: int, topic_id: int, subtopic_id: int, status: str):
-    logging.info(f"Updating status for module {module_id}, topic {topic_id}, subtopic {subtopic_id} to {status}")
+    """
+    Update the status of a subtopic and recalculate progress for topic, module, and overall curriculum.
+    
+    Args:
+        module_id: The ID of the module
+        topic_id: The ID of the topic
+        subtopic_id: The ID of the subtopic (for Module 1, can be prefixed or non-prefixed)
+        status: The new status ("not_started", "in_progress", or "completed")
+    """
+    # Input validation
     if status not in ["not_started", "in_progress", "completed"]:
         raise HTTPException(status_code=400, detail="Invalid status value")
     
-    # For Module 1, handle both prefixed and non-prefixed subtopic IDs
+    # Find the module
+    module = next((m for m in curriculum_data["modules"] if m["id"] == module_id), None)
+    if not module:
+        raise HTTPException(status_code=404, detail=f"Module {module_id} not found")
+    
+    # Find the topic
+    topic = next((t for t in module["topics"] if t["id"] == topic_id), None)
+    if not topic:
+        raise HTTPException(status_code=404, detail=f"Topic {topic_id} not found in module {module_id}")
+    
+    # Handle subtopic ID for Module 1
     actual_subtopic_id = subtopic_id
     if module_id == 1:
-        # If the subtopic ID is already prefixed (e.g., 201), use it as is
-        # If it's not prefixed (e.g., 1), prefix it with the topic ID
-        if len(str(subtopic_id)) <= 2:
-            actual_subtopic_id = int(str(topic_id) + str(subtopic_id).zfill(2))
+        subtopic_id_str = str(subtopic_id)
+        if len(subtopic_id_str) <= 2:
+            actual_subtopic_id = int(f"{topic_id}{subtopic_id_str.zfill(2)}")
     
-    subtopic_found = False
-    for module in curriculum_data["modules"]:
-        if module["id"] == module_id:
-            for topic in module["topics"]:
-                if topic["id"] == topic_id:
-                    for subtopic in topic.get("subtopics", []):
-                        if subtopic["id"] == actual_subtopic_id:
-                            subtopic_found = True
-                            subtopic["status"] = status
-                            if status == "completed":
-                                subtopic["completed_date"] = datetime.now()
-                            elif status == "not_started":
-                                subtopic["completed_date"] = None
-                            
-                            # Update topic progress based on subtopics
-                            total_subtopics = len(topic["subtopics"])
-                            completed_subtopics = sum(1 for s in topic["subtopics"] if s["status"] == "completed")
-                            topic["progress"] = (completed_subtopics / total_subtopics) * 100
-                            
-                            # Update topic status based on subtopics
-                            if all(s["status"] == "completed" for s in topic["subtopics"]):
-                                topic["status"] = "completed"
-                                topic["completed_date"] = datetime.now()
-                            elif any(s["status"] == "in_progress" for s in topic["subtopics"]):
-                                topic["status"] = "in_progress"
-                            else:
-                                topic["status"] = "not_started"
-                                topic["completed_date"] = None
-                            
-                            # Update module progress
-                            total_topics = len(module["topics"])
-                            module_progress = sum(t.get("progress", 0) for t in module["topics"])
-                            module["progress"] = module_progress / total_topics
-                            
-                            # Update overall curriculum progress
-                            total_modules = len(curriculum_data["modules"])
-                            total_progress = sum(m["progress"] for m in curriculum_data["modules"])
-                            curriculum_data["total_progress"] = total_progress / total_modules
-                            
-                            return {"message": "Status updated successfully"}
+    # Find the subtopic
+    subtopic = next((s for s in topic.get("subtopics", []) if s["id"] == actual_subtopic_id), None)
+    if not subtopic:
+        raise HTTPException(
+            status_code=404, 
+            detail=f"Subtopic {actual_subtopic_id} not found in topic {topic_id} of module {module_id}"
+        )
     
-    if not subtopic_found:
-        logging.error(f"Subtopic {actual_subtopic_id} not found in topic {topic_id} of module {module_id}")
-        raise HTTPException(status_code=404, detail="Subtopic not found")
-    raise HTTPException(status_code=500, detail="Internal server error")
+    # Update subtopic status
+    subtopic["status"] = status
+    if status == "completed":
+        subtopic["completed_date"] = datetime.now()
+    elif status == "not_started":
+        subtopic["completed_date"] = None
+    
+    # Update topic progress and status
+    subtopics = topic.get("subtopics", [])
+    if subtopics:
+        total_subtopics = len(subtopics)
+        completed_subtopics = sum(1 for s in subtopics if s["status"] == "completed")
+        topic["progress"] = (completed_subtopics / total_subtopics) * 100
+        
+        # Update topic status based on subtopics
+        if all(s["status"] == "completed" for s in subtopics):
+            topic["status"] = "completed"
+            topic["completed_date"] = datetime.now()
+        elif any(s["status"] == "in_progress" for s in subtopics):
+            topic["status"] = "in_progress"
+        else:
+            topic["status"] = "not_started"
+            topic["completed_date"] = None
+    
+    # Update module progress
+    total_topics = len(module["topics"])
+    module_progress = sum(t.get("progress", 0) for t in module["topics"])
+    module["progress"] = module_progress / total_topics
+    
+    # Update overall curriculum progress
+    total_modules = len(curriculum_data["modules"])
+    total_progress = sum(m["progress"] for m in curriculum_data["modules"])
+    curriculum_data["total_progress"] = total_progress / total_modules
+    
+    return {"message": "Status updated successfully"}
 
 @app.get("/curriculum/progress")
 async def get_progress():

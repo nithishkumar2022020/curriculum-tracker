@@ -82,36 +82,33 @@ export async function updateTopicStatus(moduleId: number, topicId: number, statu
 
 export async function updateSubtopicStatus(moduleId: number, topicId: number, subtopicId: number, status: string) {
   try {
-    console.log('%c API CALL DEBUG', 'background: #0000ff; color: white; font-size: 16px;');
-    
-    // For Module 1, subtopic IDs are prefixed with topic ID (e.g., 101, 102, 201, 202)
-    // For other modules, subtopic IDs are simple sequential numbers (1, 2, 3)
-    let adjustedSubtopicId = subtopicId;
-    
+    // Validate inputs
+    if (!moduleId || !topicId || !subtopicId || !status) {
+      throw new Error('Missing required parameters');
+    }
+
+    // For Module 1, handle subtopic IDs specially
+    let finalSubtopicId = subtopicId;
     if (moduleId === 1) {
       // If the subtopic ID is already prefixed (e.g., 201), use it as is
       // If it's not prefixed (e.g., 1), prefix it with the topic ID
-      if (String(subtopicId).length <= 2) {
-        adjustedSubtopicId = parseInt(String(topicId) + String(subtopicId).padStart(2, '0'));
+      const subtopicIdStr = String(subtopicId);
+      if (subtopicIdStr.length <= 2) {
+        finalSubtopicId = parseInt(`${topicId}${subtopicIdStr.padStart(2, '0')}`);
       }
     }
+
+    const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${finalSubtopicId}/status?status=${status}`;
     
-    const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${adjustedSubtopicId}/status?status=${status}`;
-    console.log('Making API call to update subtopic status:', {
-      url,
-      API_URL,
-      params: {
-        moduleId,
-        topicId,
-        originalSubtopicId: subtopicId,
-        adjustedSubtopicId,
-        status,
-        isModule1: moduleId === 1,
-        idLength: String(subtopicId).length,
-        needsPrefix: moduleId === 1 && String(subtopicId).length <= 2
-      }
+    console.log('Updating subtopic status:', {
+      moduleId,
+      topicId,
+      originalSubtopicId: subtopicId,
+      finalSubtopicId,
+      status,
+      url
     });
-    
+
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
@@ -122,35 +119,27 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('%c API ERROR', 'background: #ff0000; color: white; font-size: 16px;');
-      console.error('API Error:', {
+      console.error('Failed to update subtopic status:', {
         status: response.status,
         statusText: response.statusText,
         body: errorText,
         url,
-        API_URL,
         params: {
           moduleId,
           topicId,
           originalSubtopicId: subtopicId,
-          adjustedSubtopicId,
-          status,
-          isModule1: moduleId === 1,
-          idLength: String(subtopicId).length,
-          needsPrefix: moduleId === 1 && String(subtopicId).length <= 2
+          finalSubtopicId,
+          status
         }
       });
       throw new Error(`Failed to update subtopic status: ${response.status} ${response.statusText}`);
     }
 
-    console.log('%c API SUCCESS', 'background: #00ff00; color: black; font-size: 16px;');
-    console.log('Subtopic status updated successfully');
-    
-    // Invalidate cache
+    // Invalidate cache and fetch fresh data
     curriculumCache = null;
     return await fetchCurriculum();
   } catch (error) {
-    console.error('Error updating subtopic status:', error);
+    console.error('Error in updateSubtopicStatus:', error);
     throw error;
   }
 } 
