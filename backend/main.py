@@ -955,45 +955,59 @@ async def update_subtopic_status(module_id: int, topic_id: int, subtopic_id: int
         subtopic_id: The ID of the subtopic (for Module 1, can be prefixed or non-prefixed)
         status: The new status ("not_started", "in_progress", or "completed")
     """
-    # Input validation
-    if status not in ["not_started", "in_progress", "completed"]:
-        raise HTTPException(status_code=400, detail="Invalid status value")
-    
-    # Find the module
-    module = next((m for m in curriculum_data["modules"] if m["id"] == module_id), None)
-    if not module:
-        raise HTTPException(status_code=404, detail=f"Module {module_id} not found")
-    
-    # Find the topic
-    topic = next((t for t in module["topics"] if t["id"] == topic_id), None)
-    if not topic:
-        raise HTTPException(status_code=404, detail=f"Topic {topic_id} not found in module {module_id}")
-    
-    # Handle subtopic ID for Module 1
-    actual_subtopic_id = subtopic_id
-    if module_id == 1:
-        subtopic_id_str = str(subtopic_id)
-        if len(subtopic_id_str) <= 2:
-            actual_subtopic_id = int(f"{topic_id}{subtopic_id_str.zfill(2)}")
-    
-    # Find the subtopic
-    subtopic = next((s for s in topic.get("subtopics", []) if s["id"] == actual_subtopic_id), None)
-    if not subtopic:
-        raise HTTPException(
-            status_code=404, 
-            detail=f"Subtopic {actual_subtopic_id} not found in topic {topic_id} of module {module_id}"
-        )
-    
-    # Update subtopic status
-    subtopic["status"] = status
-    if status == "completed":
-        subtopic["completed_date"] = datetime.now()
-    elif status == "not_started":
-        subtopic["completed_date"] = None
-    
-    # Update topic progress and status
-    subtopics = topic.get("subtopics", [])
-    if subtopics:
+    try:
+        # Input validation
+        if status not in ["not_started", "in_progress", "completed"]:
+            raise HTTPException(status_code=400, detail="Invalid status value")
+        
+        # Log the incoming request
+        logger.info(f"Received request to update subtopic status: module={module_id}, topic={topic_id}, subtopic={subtopic_id}, status={status}")
+        
+        # Find the module
+        module = next((m for m in curriculum_data["modules"] if m["id"] == module_id), None)
+        if not module:
+            logger.error(f"Module {module_id} not found")
+            raise HTTPException(status_code=404, detail=f"Module {module_id} not found")
+        
+        # Find the topic
+        topic = next((t for t in module["topics"] if t["id"] == topic_id), None)
+        if not topic:
+            logger.error(f"Topic {topic_id} not found in module {module_id}")
+            raise HTTPException(status_code=404, detail=f"Topic {topic_id} not found in module {module_id}")
+        
+        # Handle subtopic ID for Module 1
+        actual_subtopic_id = subtopic_id
+        if module_id == 1:
+            subtopic_id_str = str(subtopic_id)
+            if len(subtopic_id_str) <= 2:
+                actual_subtopic_id = int(f"{topic_id}{subtopic_id_str.zfill(2)}")
+                logger.info(f"Adjusted subtopic ID for Module 1: {subtopic_id} -> {actual_subtopic_id}")
+        
+        # Find the subtopic
+        subtopics = topic.get("subtopics", [])
+        if not subtopics:
+            logger.error(f"No subtopics found in topic {topic_id} of module {module_id}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"No subtopics found in topic {topic_id} of module {module_id}"
+            )
+        
+        subtopic = next((s for s in subtopics if s["id"] == actual_subtopic_id), None)
+        if not subtopic:
+            logger.error(f"Subtopic {actual_subtopic_id} not found in topic {topic_id} of module {module_id}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"Subtopic {actual_subtopic_id} not found in topic {topic_id} of module {module_id}"
+            )
+        
+        # Update subtopic status
+        subtopic["status"] = status
+        if status == "completed":
+            subtopic["completed_date"] = datetime.now()
+        elif status == "not_started":
+            subtopic["completed_date"] = None
+        
+        # Update topic progress and status
         total_subtopics = len(subtopics)
         completed_subtopics = sum(1 for s in subtopics if s["status"] == "completed")
         topic["progress"] = (completed_subtopics / total_subtopics) * 100
@@ -1007,18 +1021,30 @@ async def update_subtopic_status(module_id: int, topic_id: int, subtopic_id: int
         else:
             topic["status"] = "not_started"
             topic["completed_date"] = None
-    
-    # Update module progress
-    total_topics = len(module["topics"])
-    module_progress = sum(t.get("progress", 0) for t in module["topics"])
-    module["progress"] = module_progress / total_topics
-    
-    # Update overall curriculum progress
-    total_modules = len(curriculum_data["modules"])
-    total_progress = sum(m["progress"] for m in curriculum_data["modules"])
-    curriculum_data["total_progress"] = total_progress / total_modules
-    
-    return {"message": "Status updated successfully"}
+        
+        # Update module progress
+        total_topics = len(module["topics"])
+        module_progress = sum(t.get("progress", 0) for t in module["topics"])
+        module["progress"] = module_progress / total_topics
+        
+        # Update overall curriculum progress
+        total_modules = len(curriculum_data["modules"])
+        total_progress = sum(m["progress"] for m in curriculum_data["modules"])
+        curriculum_data["total_progress"] = total_progress / total_modules
+        
+        logger.info(f"Successfully updated subtopic status: module={module_id}, topic={topic_id}, subtopic={actual_subtopic_id}, status={status}")
+        return {"message": "Status updated successfully"}
+        
+    except HTTPException as he:
+        # Re-raise HTTP exceptions as is
+        raise he
+    except Exception as e:
+        # Log unexpected errors and return 500
+        logger.error(f"Unexpected error updating subtopic status: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Internal server error: {str(e)}"
+        )
 
 @app.get("/curriculum/progress")
 async def get_progress():

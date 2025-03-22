@@ -81,65 +81,86 @@ export async function updateTopicStatus(moduleId: number, topicId: number, statu
 }
 
 export async function updateSubtopicStatus(moduleId: number, topicId: number, subtopicId: number, status: string) {
-  try {
-    // Validate inputs
-    if (!moduleId || !topicId || !subtopicId || !status) {
-      throw new Error('Missing required parameters');
-    }
+  const MAX_RETRIES = 3;
+  const RETRY_DELAY = 1000; // 1 second
 
-    // For Module 1, handle subtopic IDs specially
-    let finalSubtopicId = subtopicId;
-    if (moduleId === 1) {
-      // If the subtopic ID is already prefixed (e.g., 201), use it as is
-      // If it's not prefixed (e.g., 1), prefix it with the topic ID
-      const subtopicIdStr = String(subtopicId);
-      if (subtopicIdStr.length <= 2) {
-        finalSubtopicId = parseInt(`${topicId}${subtopicIdStr.padStart(2, '0')}`);
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      // Validate inputs
+      if (!moduleId || !topicId || !subtopicId || !status) {
+        throw new Error('Missing required parameters');
       }
-    }
 
-    const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${finalSubtopicId}/status?status=${status}`;
-    
-    console.log('Updating subtopic status:', {
-      moduleId,
-      topicId,
-      originalSubtopicId: subtopicId,
-      finalSubtopicId,
-      status,
-      url
-    });
-
-    const response = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Failed to update subtopic status:', {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText,
-        url,
-        params: {
-          moduleId,
-          topicId,
-          originalSubtopicId: subtopicId,
-          finalSubtopicId,
-          status
+      // For Module 1, handle subtopic IDs specially
+      let finalSubtopicId = subtopicId;
+      if (moduleId === 1) {
+        // If the subtopic ID is already prefixed (e.g., 201), use it as is
+        // If it's not prefixed (e.g., 1), prefix it with the topic ID
+        const subtopicIdStr = String(subtopicId);
+        if (subtopicIdStr.length <= 2) {
+          finalSubtopicId = parseInt(`${topicId}${subtopicIdStr.padStart(2, '0')}`);
         }
-      });
-      throw new Error(`Failed to update subtopic status: ${response.status} ${response.statusText}`);
-    }
+      }
 
-    // Invalidate cache and fetch fresh data
-    curriculumCache = null;
-    return await fetchCurriculum();
-  } catch (error) {
-    console.error('Error in updateSubtopicStatus:', error);
-    throw error;
+      const url = `${API_URL}/curriculum/module/${moduleId}/topic/${topicId}/subtopic/${finalSubtopicId}/status?status=${status}`;
+      
+      console.log(`Attempt ${attempt}/${MAX_RETRIES} - Updating subtopic status:`, {
+        moduleId,
+        topicId,
+        originalSubtopicId: subtopicId,
+        finalSubtopicId,
+        status,
+        url
+      });
+
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Attempt ${attempt}/${MAX_RETRIES} - Failed to update subtopic status:`, {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText,
+          url,
+          params: {
+            moduleId,
+            topicId,
+            originalSubtopicId: subtopicId,
+            finalSubtopicId,
+            status
+          }
+        });
+
+        // If it's a 502 error and we haven't exhausted retries, wait and try again
+        if (response.status === 502 && attempt < MAX_RETRIES) {
+          console.log(`Waiting ${RETRY_DELAY}ms before retry...`);
+          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+          continue;
+        }
+
+        throw new Error(`Failed to update subtopic status: ${response.status} ${response.statusText}`);
+      }
+
+      // Invalidate cache and fetch fresh data
+      curriculumCache = null;
+      return await fetchCurriculum();
+    } catch (error) {
+      console.error(`Attempt ${attempt}/${MAX_RETRIES} - Error in updateSubtopicStatus:`, error);
+      
+      // If this is the last attempt, throw the error
+      if (attempt === MAX_RETRIES) {
+        throw error;
+      }
+      
+      // Otherwise, wait and try again
+      console.log(`Waiting ${RETRY_DELAY}ms before retry...`);
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+    }
   }
 } 
