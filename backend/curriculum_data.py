@@ -144,19 +144,19 @@ def find_subtopic(module_id: int, topic_id: int, subtopic_id: int) -> Dict[str, 
         print(f"Topic {topic_id} not found in module {module_id}")
         return None
     
-    # For Module 1, handle subtopic IDs specially
-    if module_id == 1:
-        # If the subtopic ID is already prefixed, verify it matches the topic ID
-        subtopic_id_str = str(subtopic_id)
-        if len(subtopic_id_str) > 2:
-            prefix = subtopic_id_str[0]
-            if prefix != str(topic_id):
-                print(f"Invalid subtopic ID: {subtopic_id} does not match topic ID {topic_id}")
-                return None
-        else:
-            # If not prefixed, prefix it with the topic ID
-            subtopic_id = int(f"{topic_id}{subtopic_id_str.padStart(2, '0')}")
-            print(f"Adjusted subtopic ID: {subtopic_id}")
+    # Handle subtopic IDs consistently across all modules
+    subtopic_id_str = str(subtopic_id)
+    
+    # If the subtopic ID is already prefixed, verify it matches the topic ID
+    if len(subtopic_id_str) > 2:
+        prefix = subtopic_id_str[0]
+        if prefix != str(topic_id):
+            print(f"Invalid subtopic ID: {subtopic_id} does not match topic ID {topic_id}")
+            return None
+    else:
+        # If not prefixed, prefix it with the topic ID
+        subtopic_id = int(f"{topic_id}{subtopic_id_str.padStart(2, '0')}")
+        print(f"Adjusted subtopic ID: {subtopic_id}")
     
     # Find the subtopic
     subtopic = next((s for s in topic["subtopics"] if s["id"] == subtopic_id), None)

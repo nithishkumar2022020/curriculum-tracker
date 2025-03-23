@@ -94,20 +94,18 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
         throw new Error('Missing required parameters');
       }
 
-      // For Module 1, handle subtopic IDs specially
+      // Handle subtopic IDs consistently across all modules
       let finalSubtopicId = subtopicId;
-      if (moduleId === 1) {
-        // If the subtopic ID is already prefixed (e.g., 201), use it as is
-        // If it's not prefixed (e.g., 1), prefix it with the topic ID
-        const subtopicIdStr = String(subtopicId);
-        if (subtopicIdStr.length <= 2) {
-          finalSubtopicId = parseInt(`${topicId}${subtopicIdStr.padStart(2, '0')}`);
-        } else {
-          // If the subtopic ID is already prefixed, verify it matches the topic ID
-          const prefix = subtopicIdStr.substring(0, 1);
-          if (prefix !== String(topicId)) {
-            throw new Error(`Invalid subtopic ID: ${subtopicId} does not match topic ID ${topicId}`);
-          }
+      const subtopicIdStr = String(subtopicId);
+      
+      // If the subtopic ID is not prefixed (e.g., 1), prefix it with the topic ID
+      if (subtopicIdStr.length <= 2) {
+        finalSubtopicId = parseInt(`${topicId}${subtopicIdStr.padStart(2, '0')}`);
+      } else {
+        // If the subtopic ID is already prefixed, verify it matches the topic ID
+        const prefix = subtopicIdStr.substring(0, 1);
+        if (prefix !== String(topicId)) {
+          throw new Error(`Invalid subtopic ID: ${subtopicId} does not match topic ID ${topicId}`);
         }
       }
 
