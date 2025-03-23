@@ -102,6 +102,12 @@ export async function updateSubtopicStatus(moduleId: number, topicId: number, su
         const subtopicIdStr = String(subtopicId);
         if (subtopicIdStr.length <= 2) {
           finalSubtopicId = parseInt(`${topicId}${subtopicIdStr.padStart(2, '0')}`);
+        } else {
+          // If the subtopic ID is already prefixed, verify it matches the topic ID
+          const prefix = subtopicIdStr.substring(0, 1);
+          if (prefix !== String(topicId)) {
+            throw new Error(`Invalid subtopic ID: ${subtopicId} does not match topic ID ${topicId}`);
+          }
         }
       }
 
