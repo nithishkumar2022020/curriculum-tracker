@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: curriculum-tracker-backend
+    name: curriculum-tracker-new-backend
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
@@ -10,15 +10,15 @@ services:
       - key: PORT
         value: 8080
       - key: FRONTEND_URL
-        value: https://curriculum-tracker-frontend.onrender.com
+        value: https://curriculum-tracker-new-frontend.onrender.com
       - key: RENDER_EXTERNAL_URL
-        value: https://curriculum-tracker-backend.onrender.com
+        value: https://curriculum-tracker-new-backend.onrender.com
 
   - type: web
-    name: curriculum-tracker-frontend
+    name: curriculum-tracker-new-frontend
     env: node
     buildCommand: cd frontend && npm install && npm run build
     startCommand: cd frontend && npm run build && npm start
     envVars:
       - key: NEXT_PUBLIC_API_URL
-        value: https://curriculum-tracker-backend.onrender.com 
+        value: https://curriculum-tracker-new-backend.onrender.com 
