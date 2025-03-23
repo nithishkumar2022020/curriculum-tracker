@@ -1,7 +1,10 @@
 import { Curriculum } from './types';
 
-// Get the API URL from environment variable or use default
+// API Configuration
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
+// Add logging for API URL
+console.log('Using API URL:', API_URL);
 
 // Cache for curriculum data
 let curriculumCache: Curriculum | null = null;
