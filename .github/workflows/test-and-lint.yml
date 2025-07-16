@@ -23,6 +23,10 @@ jobs:
         cd backend
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+
+    - name: Install linting tools
+      run: |
+        cd backend
         pip install black flake8 pytest
     
     - name: Lint Python code
@@ -30,6 +34,14 @@ jobs:
         cd backend
         flake8 .
         black --check .
+      env:
+        PYTHONPATH: .
+      continue-on-error: false
+
+    - name: Check for PEP 8 compliance
+      run: |
+        cd backend
+        flake8 . --max-line-length=88 --select=E,W
     
     - name: Run backend tests
       run: |
