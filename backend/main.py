@@ -6,8 +6,6 @@ from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 import logging
-from enum import Enum
-import json
 from curriculum_data import get_curriculum_data, find_subtopic
 
 # Setup logging with more detailed format
