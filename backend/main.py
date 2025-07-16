@@ -19,6 +19,9 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Full-Stack Development Progress Tracker")
 
+# Configure port from environment variable or use default
+PORT = int(os.getenv("PORT", "8001"))
+
 # Get CORS origins from environment variable or use default
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3002")
 RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")

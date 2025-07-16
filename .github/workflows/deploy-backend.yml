@@ -1,15 +1,21 @@
-name: Deploy Backend to Render
+name: Deploy Backend to GitHub Pages
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
     paths:
       - 'backend/**'
       - '.github/workflows/deploy-backend.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   deploy:
+    environment: production
     runs-on: ubuntu-latest
     
     steps:
@@ -26,14 +32,30 @@ jobs:
         cd backend
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install gunicorn
 
     - name: Test backend
       run: |
         cd backend
         python -c "import main; print('Backend imports successfully')"
+        python -c "from curriculum_data import get_curriculum_data; print('Curriculum data loads successfully')"
 
-    - name: Deploy to Render
-      run: |
-        echo "Backend deployment triggered by push to main branch"
-        echo "Render will automatically deploy from GitHub repository"
-        echo "Backend URL: https://curriculum-tracker-new-backend.onrender.com"
+    - name: Build Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: backend/Dockerfile
+        push: true
+        tags: |
+          ghcr.io/nithishkumar2022020/curriculum-tracker-backend:latest
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: backend
+        keep_files: true
+        clean: true

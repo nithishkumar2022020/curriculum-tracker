@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages and Render
 
 on:
   push:
@@ -11,20 +11,32 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "deploy"
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  deploy:
+    environment: production
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Backend Deployment
+      - name: Deploy Backend to Render
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.RENDER_SSH_HOST }}
+          username: ${{ secrets.RENDER_SSH_USER }}
+          key: ${{ secrets.RENDER_SSH_KEY }}
+          script: |
+            cd backend
+            git pull origin main
+            pip install -r requirements.txt
+            uvicorn main:app --host 0.0.0.0 --port 8000
+
+      # Frontend Deployment
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -36,17 +48,21 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: |
-          npm install
-          npm list typescript @types/react @types/node || npm install --save-dev typescript@5.3.3 @types/react@18.2.45 @types/node@20.10.5 @types/react-dom@18.2.18
+        run: npm ci
 
       - name: Build
         working-directory: frontend
         run: npm run build
         env:
-          NEXT_PUBLIC_API_URL: https://curriculum-tracker-backend.onrender.com
+          NEXT_PUBLIC_API_URL: ${{ secrets.API_URL }}
           CI: true
           NODE_ENV: production
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: frontend/out
 
       - name: Prepare for deployment
         working-directory: frontend

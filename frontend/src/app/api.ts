@@ -1,7 +1,7 @@
 import { Curriculum } from './types';
 
 // API Configuration
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 
 // Add logging for API URL
 console.log('Using API URL:', API_URL);

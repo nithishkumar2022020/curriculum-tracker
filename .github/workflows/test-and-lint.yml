@@ -7,7 +7,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  test-backend:
+  test-and-lint-backend:
     runs-on: ubuntu-latest
     
     steps:
@@ -23,14 +23,20 @@ jobs:
         cd backend
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install black flake8 pytest
     
-    - name: Test backend imports
+    - name: Lint Python code
       run: |
         cd backend
-        python -c "import main; print('✅ Backend imports successfully')"
-        python -c "from curriculum_data import get_curriculum_data; print('✅ Curriculum data loads successfully')"
+        flake8 .
+        black --check .
+    
+    - name: Run backend tests
+      run: |
+        cd backend
+        pytest
 
-  test-frontend:
+  test-and-lint-frontend:
     runs-on: ubuntu-latest
     
     steps:
@@ -47,6 +53,16 @@ jobs:
       run: |
         cd frontend
         npm ci
+    
+    - name: Lint TypeScript code
+      run: |
+        cd frontend
+        npm run lint
+    
+    - name: Run frontend tests
+      run: |
+        cd frontend
+        npm run test
     
     - name: Lint frontend
       run: |
