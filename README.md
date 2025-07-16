@@ -2,6 +2,8 @@
 
 A full-stack web application to track progress through a software development curriculum. Built with FastAPI (backend) and Next.js (frontend).
 
+🚀 **Live Demo**: [View Application](https://[your-username].github.io/curriculum-tracker)
+
 Last updated: 2024-03-19 14:30 UTC
 
 ## Features

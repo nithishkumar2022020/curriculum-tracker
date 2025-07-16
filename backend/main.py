@@ -131,6 +131,14 @@ class Curriculum(BaseModel):
 async def root():
     return {"message": "Welcome to Full-Stack Development Progress Tracker API"}
 
+@app.get("/health")
+async def health_check():
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "version": "1.0.0"
+    }
+
 @app.get("/curriculum")
 async def get_curriculum():
     return get_curriculum_data()
@@ -159,6 +167,60 @@ async def update_subtopic_status(module_id: int, topic_id: int, subtopic_id: int
     total_subtopics = sum(len(t["subtopics"]) for m in curriculum["modules"] for t in m["topics"])
     completed_subtopics = sum(1 for m in curriculum["modules"] for t in m["topics"] for s in t["subtopics"] if s["status"] == "completed")
     curriculum["total_progress"] = (completed_subtopics / total_subtopics) * 100
+    
+    # Update module progress
+    for module in curriculum["modules"]:
+        module_subtopics = sum(len(t["subtopics"]) for t in module["topics"])
+        module_completed = sum(1 for t in module["topics"] for s in t["subtopics"] if s["status"] == "completed")
+        module["progress"] = (module_completed / module_subtopics) * 100 if module_subtopics > 0 else 0
+    
+    return curriculum
+
+@app.put("/curriculum/module/{module_id}/topic/{topic_id}/status")
+async def update_topic_status(module_id: int, topic_id: int, status: str):
+    logger.debug(f"Updating topic status: module={module_id}, topic={topic_id}, status={status}")
+    
+    # Validate status
+    if status not in ["not_started", "in_progress", "completed"]:
+        raise HTTPException(status_code=400, detail="Invalid status value")
+    
+    curriculum = get_curriculum_data()
+    
+    # Find the module and topic
+    module = None
+    topic = None
+    for m in curriculum["modules"]:
+        if m["id"] == module_id:
+            module = m
+            for t in m["topics"]:
+                if t["id"] == topic_id:
+                    topic = t
+                    break
+            break
+    
+    if not module or not topic:
+        logger.error(f"Topic not found: module={module_id}, topic={topic_id}")
+        raise HTTPException(status_code=404, detail="Topic not found")
+    
+    # Update topic status
+    topic["status"] = status
+    if status == "completed":
+        topic["completed_date"] = datetime.now()
+        # Also mark all subtopics as completed
+        for subtopic in topic.get("subtopics", []):
+            subtopic["status"] = "completed"
+            subtopic["completed_date"] = datetime.now()
+    elif status == "not_started":
+        topic["completed_date"] = None
+        # Also mark all subtopics as not started
+        for subtopic in topic.get("subtopics", []):
+            subtopic["status"] = "not_started"
+            subtopic["completed_date"] = None
+    
+    # Calculate progress
+    total_subtopics = sum(len(t["subtopics"]) for m in curriculum["modules"] for t in m["topics"])
+    completed_subtopics = sum(1 for m in curriculum["modules"] for t in m["topics"] for s in t["subtopics"] if s["status"] == "completed")
+    curriculum["total_progress"] = (completed_subtopics / total_subtopics) * 100 if total_subtopics > 0 else 0
     
     # Update module progress
     for module in curriculum["modules"]:

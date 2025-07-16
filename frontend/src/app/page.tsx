@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { fetchCurriculum, updateTopicStatus, updateSubtopicStatus } from './api';
 import { Curriculum, Module, Topic, Subtopic } from './types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://curriculum-tracker-new-backend.onrender.com';
+// Remove this duplicate API_URL definition since it's already in api.ts
 
 export default function Home() {
   const [curriculum, setCurriculum] = useState<Curriculum | null>(null);
