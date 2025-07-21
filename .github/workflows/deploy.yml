@@ -25,7 +25,7 @@ jobs:
 
       # Backend Deployment
       - name: Build Backend Docker Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: backend/Dockerfile
